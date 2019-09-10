@@ -44,7 +44,7 @@ def Handle_Frame_Init(): #This function works in Del01, but fails if I move it t
                     # matching your finger's xy coordinates to the dot's position
                     tip = distalPhalanx.next_joint
                     x = int(tip[0])
-                    y = int(tip[2]) #deliverable says y should be the second value in tip
+                    y = int(tip[2]) #deliverable says y should be the second value in tip, so why are we using the third?
 
 
                     # axis control (leapMin and leapMax)
@@ -85,26 +85,7 @@ while runStatus:
 
     pygameWindow.Draw_Black_Circle(pygameX, pygameY)
 
-
-
-#    def Perturb_Circle_Position():
-#        global x, y
-#        fourSidedDieRoll = random.randint(1,4)
-#        if fourSidedDieRoll == 1:
-#            x = (x - 1)
-#        elif fourSidedDieRoll == 2:
-#            x = (x + 1)
-#        elif fourSidedDieRoll == 3:
-#            y = (y - 1)
-#        else:
-#            y = (y + 1)
-    
-#    Perturb_Circle_Position()
-
     pygameWindow.Reveal() #show drawn material to the user
-
-#print(pygameWindow)
-
 
 #Code for troubleshooting invalid frame error
 #     if(controller.is_connected):
@@ -115,7 +96,3 @@ while runStatus:
 
 #IMPORT ERROR RESOLVED: moved all leap library files out of x64 and into main lib folder.
 #Why did this work? I have no idea
-
-#As written, I get ImportError: No module named LeapPython
-#Adding the entire directory as a string gets ImportError: No module named Leap
-#Adding the entire directory not as a string gets SyntaxError: unexpected character after line continuation character

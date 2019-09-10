@@ -10,7 +10,7 @@ black = (0,0,0)
 circleVelocity = 4
 
 #Axis values
-xMin = -600.0
+xMin = -600.0 #formerly all 600
 xMax = 600.0
 yMin = -600.0
 yMax = 600.0

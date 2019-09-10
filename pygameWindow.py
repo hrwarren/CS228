@@ -32,32 +32,64 @@ class PYGAME_WINDOW:
             y = constants.pygameWindowDepth
         pygame.draw.circle(self.screen, constants.black, [x,y], 20) #args are (screen, color, coordinates, size)
 
+    def Draw_Black_Line(self, xBase, yBase, xTip, yTip, b):
+        pygame.draw.line(self.screen, constants.black, [xBase, yBase], [xTip, yTip], b)
 
-    # def Handle_Frame_Init(self):
+    #copied Scale() over from Del01
+    def Scale(self, coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
+        screenwidth = winMax - winMin
+        scalar = 3
+        ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
+        #print(ratio)
+        return int((ratio) * (screenwidth))
+
+    # def Handle_Vector_From_Leap(self, v):
+    #     xPre = int(v[0])
+    #     yPre = int(v[2])  # why not v[1]?
+    #     xv = self.Scale(xPre, constants.xMin, constants.xMax, 0, constants.pygameWindowWidth)
+    #     yv = self.Scale(yPre, constants.yMin, constants.yMax, 0, constants.pygameWindowDepth)
+    #     return (xv, yv)
+    #
+    # def Handle_Finger(self, finger):
+    #     for b in range(0, 4):
+    #         bone = finger.bone(b)
+    #         self.Handle_Bone(bone)
+    #
+    # def Handle_Bone(self, bone):
+    #     base = bone.prev_joint
+    #     tip = bone.next_joint
+    #     self. xBase, self.yBase = self.Handle_Vector_From_Leap(base)
+    #     self.xTip, self.yTip = self.Handle_Vector_From_Leap(tip)
+    #     #self.Draw_Black_Line(xBase, yBase, xTip, yTip)
+    #     print(self.xBase, self.yBase)
+    #     print(self.xTip, self.yTip)
+    #
+    # def Handle_Frame_Init(self):  # This function works in Del01, but fails if I move it to pygameWindow
+    #     global x
+    #     global y
+    #
     #     handList = self.frame.hands
-    #     print(len(handList))
-    #     if len(handList) > 0:
-    #         print('test')
+    #     if len(handList) > 0:  # use isempty to track values of objects in the list
     #         handList = self.frame.hands
-    #         print('test')
     #         for hand in handList:
-    #             print(hand)
     #             fingers = hand.fingers
-    #             if not fingers.is_empty:
-    #                 for finger in fingers: #plural means it's a list, which is a static list (can hold anything)
-    #                     print('test')
-    #                     indexFingerList = fingers.finger_type(finger.TYPE_INDEX)
-    #                     indexFinger = indexFingerList[0]
-    #                     distalPhalanx = indexFinger.bone(finger.bone.TYPE_DISTAL)
-    #                     #print(distalPhalanx)
-    #                     print(finger)
-    #                     print(self.frame)
-
+    #             for finger in fingers:
+    #
+    #                 # axis control (leapMin and leapMax)
+    #                 if x < constants.xMin:
+    #                     xMin = x
+    #                 if x > constants.xMax:
+    #                     xMax = x
+    #                 if y < constants.yMin:
+    #                     yMin = y
+    #                 if y > constants.yMax:
+    #                     yMax = y
+    #
+    #                 self.Handle_Finger(finger)
 
 
     #def Handle_Frame_Update(self, frame):
 
-        #print(hand)
 
 
 
