@@ -40,7 +40,7 @@ def Handle_Vector_From_Leap(v):
     xPre = int(v[0])
     yPre = int(v[2]) #why not v[1]?
 
-    # axis control (leapMin and leapMax)
+    # # axis control (leapMin and leapMax)
     if xPre < constants.xMin:
         xPre = constants.xMin
     if xPre > constants.xMax:
@@ -49,8 +49,14 @@ def Handle_Vector_From_Leap(v):
         yPre = constants.yMin
     if yPre > constants.yMax:
         yPre = constants.yMax
+
     xv = pygameWindow.Scale(xPre, constants.xMin, constants.xMax, 0, constants.pygameWindowWidth)
     yv = pygameWindow.Scale(yPre, constants.yMin, constants.yMax, 0, constants.pygameWindowDepth)
+
+    # if xv < 0:
+    #      xv = 0
+    # if xv > 1200:
+    #      xv = 1200
     return(xv, yv)
 
 

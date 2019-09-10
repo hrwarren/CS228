@@ -48,14 +48,14 @@ def Handle_Frame_Init(): #This function works in Del01, but fails if I move it t
 
 
                     # axis control (leapMin and leapMax)
-                    if x < constants.xMin:
-                        xMin = x
-                    if x > constants.xMax:
-                        xMax = x
-                    if y < constants.yMin:
-                        yMin = y
-                    if y > constants.yMax:
-                        yMax = y
+                    # if x < constants.xMin:
+                    #     xMin = x
+                    # if x > constants.xMax:
+                    #     xMax = x
+                    # if y < constants.yMin:
+                    #     yMin = y
+                    # if y > constants.yMax:
+                    #     yMax = y
 
 
 
