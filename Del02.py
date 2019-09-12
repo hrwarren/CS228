@@ -21,6 +21,13 @@ controller = Leap.Controller()
 
 runStatus = True  # this is now a switch
 
+def Scale(coord, leapMin, leapMax, winMin, winMax): #this Min could be zero dammit
+    screenwidth = winMax - winMin
+    scalar = 2
+    ratio = (((scalar*coord) + ((leapMax-leapMin)/2)) / (leapMax - leapMin))
+    print(ratio)
+    return int((ratio) * (screenwidth))
+
 def Handle_Finger(finger):
     global b
     for b in range(0, 4):
@@ -39,8 +46,7 @@ def Handle_Bone(bone):
 def Handle_Vector_From_Leap(v):
     xPre = int(v[0])
     yPre = int(v[2]) #why not v[1]?
-
-    # # axis control (leapMin and leapMax)
+    # axis control (leapMin and leapMax)
     if xPre < constants.xMin:
         xPre = constants.xMin
     if xPre > constants.xMax:
@@ -50,9 +56,10 @@ def Handle_Vector_From_Leap(v):
     if yPre > constants.yMax:
         yPre = constants.yMax
 
+    print('Pre', xPre, yPre)
     xv = pygameWindow.Scale(xPre, constants.xMin, constants.xMax, 0, constants.pygameWindowWidth)
     yv = pygameWindow.Scale(yPre, constants.yMin, constants.yMax, 0, constants.pygameWindowDepth)
-
+    print('v', xv, yv)
     # if xv < 0:
     #      xv = 0
     # if xv > 1200:

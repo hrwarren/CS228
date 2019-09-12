@@ -35,13 +35,13 @@ class PYGAME_WINDOW:
     def Draw_Black_Line(self, xBase, yBase, xTip, yTip, b):
         pygame.draw.line(self.screen, constants.black, [xBase, yBase], [xTip, yTip], b)
 
-    #copied Scale() over from Del01
-    def Scale(self, coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
-        screenwidth = winMax - winMin
-        scalar = 3
-        ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
-        #print(ratio)
-        return int((ratio) * (screenwidth))
+    # #copied Scale() over from Del01
+    # def Scale(self, coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
+    #     screenwidth = winMax - winMin
+    #     scalar = 3
+    #     ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
+    #     print(ratio)
+    #     return int((ratio) * (screenwidth))
 
     # def Handle_Vector_From_Leap(self, v):
     #     xPre = int(v[0])
@@ -89,22 +89,3 @@ class PYGAME_WINDOW:
 
 
     #def Handle_Frame_Update(self, frame):
-
-
-
-
-#SOLUTION TO NAMEERROR: don't use the @classmethod decorator! Problem solved
-
-
-#EVERYTHING BELOW IS RESOLVED
-
-#When everything is in its current state and I use self.screen.fill(...), get NameError: global name 'self' is not defined
-#Running pygameWindow.py in terminal in its current state gives no errors
-
-#Moving self.screen.fill(...) to def __init__(self) section removes the error, but makes the screen permanently white
-#Removing self and making it screen.fill(...) just makes screen the undefined variable instead
-#Removing pygame.event.get() does not change error
-#Making Prepare(cls) into Prepare(self) instead; got AttributeError: class PYGAME_WINDOW has no attribute 'screen'
-#Making self.screen........ into cls.screen...... yields the same AttributeError as above
-#Changing anything about the indentation just yields IndentationError: unexpected indent
-#Adding self as an argument to Prepare(cls) gets TypeError: Prepare() takes exactly 2 arguments (1 given)
