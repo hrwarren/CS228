@@ -5,21 +5,26 @@ sys.path.insert(1, '../x86')
 import Leap #why is there no module named Leap?
 
 import constants
-import pygameWindow
+from pygameWindow_Del03 import PYGAME_WINDOW_Del03
 
 class DELIVERABLE:
 
 
     def __init__(self, x, y, xMin, xMax, yMin, yMax):
         self.controller = Leap.Controller()
-        self.pygameWindow = pygameWindow.PYGAME_WINDOW()
+        self.pygameWindow = PYGAME_WINDOW_Del03()
         self.frame = self.controller.frame()
+
+        #Could just bring all of these variables over from constants.py?
         self.x = x
         self.y = y
         self.xMin = xMin
         self.xMax = xMax
         self.yMin = yMin
         self.yMax = yMax
+
+        #should these even be here?
+
 
     #copied Scale() over from Del01
     def Scale(self, coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
@@ -30,24 +35,34 @@ class DELIVERABLE:
         return int((ratio) * (screenwidth))
 
     def Handle_Vector_From_Leap(self, v):
-        xPre = int(v[0])
-        yPre = int(v[2])  # why not v[1]?
+        self.xPre = int(v[0])
+        self.yPre = int(v[2])  # why not v[1]?
         # axis control (leapMin and leapMax)
-        if xPre < self.xMin:
-            xPre = self.xMin
-        if xPre > self.xMax:
-            xPre = self.xMax
-        if yPre < self.yMin:
-            yPre = self.yMin
-        if yPre > self.yMax:
-            yPre = self.yMax
+        if self.xPre < self.xMin: #I feel like making all of this self-referencing is broken
+            self.xPre = self.xMin
+        if self.xPre > self.xMax:
+            self.xPre = self.xMax
+        if self.yPre < self.yMin:
+            self.yPre = self.yMin
+        if self.yPre > self.yMax:
+            self.yPre = self.yMax
+        xv = self.Scale(self.xPre, constants.xMin, constants.xMax, 0, constants.pygameWindowWidth)
+        yv = self.Scale(self.yPre, constants.yMin, constants.yMax, 0, constants.pygameWindowDepth)
+        return(xv, yv)
+
 
     def Handle_Bone(self, bone):
         base = bone.prev_joint
         tip = bone.next_joint
         xBase, yBase = self.Handle_Vector_From_Leap(base)
         xTip, yTip = self.Handle_Vector_From_Leap(tip)
-        pygameWindow.Draw_Black_Line(xBase, yBase, xTip, yTip, (3 - b))
+
+        print(self.numberOfHands)
+        if self.numberOfHands == 1:
+            self.pygameWindow.Draw_Line(constants.green, xBase, yBase, xTip, yTip, (3 - b))
+        elif self.numberOfHands == 2:
+            self.pygameWindow.Draw_Line(constants.red, xBase, yBase, xTip, yTip, (3 - b))
+
         print(xBase, yBase)
         print(xTip, yTip)
 
@@ -69,21 +84,24 @@ class DELIVERABLE:
     def Handle_Frame_Init(self):  # This function works in Del01, but fails if I move it to pygameWindow
 
         handList = self.frame.hands
-        if len(handList) > 0:  # use isempty to track values of objects in the list
-            #handList = self.frame.hands
+        self.currentNumberOfHands = len(handList) #can I define a self.variable down here?
+        if self.numberOfHands > 0:  # use isempty to track values of objects in the list
             for hand in handList:
                 fingers = hand.fingers
                 for finger in fingers:
-                    # I HAVE EVERYTHING BUT THE AXIS CONTROL
-                    # WHAT AM I DOING HERE THAT IS DIFFERENT FROM WHAT I'M DOING IN DEL 01???
-                    # axis control (leapMin and leapMax)
-                    # if x < constants.xMin:
-                    #     xMin = x
-                    # if x > constants.xMax:
-                    #     xMax = x
-                    # if y < constants.yMin:
-                    #     yMin = y
-                    # if y > constants.yMax:
-                    #     yMax = y
-
                     self.Handle_Finger(finger)
+            self.previousNumberOfHands = self.currentNumberOfHands
+
+    def Run_Forever(self):
+        runStatus = True  # this is now a switch
+
+    # I'm supposed to put everything below here in its own method, but I don't see why that's necessary
+        while runStatus:
+            self.pygameWindow.Prepare()  # wipe window to prepare for drawing
+
+            self.frame = self.controller.frame()
+
+            self.Handle_Frame_Init()
+
+            self.pygameWindow.Reveal()  # show drawn material to the user
+

@@ -35,13 +35,13 @@ class PYGAME_WINDOW:
     def Draw_Black_Line(self, xBase, yBase, xTip, yTip, b):
         pygame.draw.line(self.screen, constants.black, [xBase, yBase], [xTip, yTip], b)
 
-    # #copied Scale() over from Del01
-    # def Scale(self, coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
-    #     screenwidth = winMax - winMin
-    #     scalar = 3
-    #     ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
-    #     print(ratio)
-    #     return int((ratio) * (screenwidth))
+    #copied Scale() over from Del01
+    def Scale(self, coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
+        screenwidth = winMax - winMin
+        scalar = 3
+        ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
+        print(ratio)
+        return int((ratio) * (screenwidth))
 
     # def Handle_Vector_From_Leap(self, v):
     #     xPre = int(v[0])

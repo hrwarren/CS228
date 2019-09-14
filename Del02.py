@@ -12,6 +12,10 @@ from pygameWindow import PYGAME_WINDOW
 # circle position and axes
 x = 0
 y = 0
+xMin = constants.xMin
+xMax = constants.xMax
+yMin = constants.yMin
+yMax = constants.yMax
 
 
 # Creating an instance of the PYGAME_WINDOW class
@@ -44,21 +48,26 @@ def Handle_Bone(bone):
     print(xTip, yTip)
 
 def Handle_Vector_From_Leap(v):
+    global xMin
+    global xMax
+    global yMin
+    global yMax
+
     xPre = int(v[0])
     yPre = int(v[2]) #why not v[1]?
     # axis control (leapMin and leapMax)
-    if xPre < constants.xMin:
-        xPre = constants.xMin
-    if xPre > constants.xMax:
-        xPre = constants.xMax
-    if yPre < constants.yMin:
-        yPre = constants.yMin
-    if yPre > constants.yMax:
-        yPre = constants.yMax
+    if xPre < xMin:
+        xMin = xPre
+    if xPre > xMax:
+        xMax = xPre
+    if yPre < yMin:
+        yMin = yPre
+    if yPre > yMax:
+        yMax = yPre
 
     print('Pre', xPre, yPre)
-    xv = pygameWindow.Scale(xPre, constants.xMin, constants.xMax, 0, constants.pygameWindowWidth)
-    yv = pygameWindow.Scale(yPre, constants.yMin, constants.yMax, 0, constants.pygameWindowDepth)
+    xv = pygameWindow.Scale(xPre, xMin, xMax, 0, constants.pygameWindowWidth)
+    yv = pygameWindow.Scale(yPre, yMin, yMax, 0, constants.pygameWindowDepth)
     print('v', xv, yv)
     # if xv < 0:
     #      xv = 0
