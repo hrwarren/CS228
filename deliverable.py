@@ -4,6 +4,8 @@ sys.path.insert(1, '../x86')
 
 import Leap #why is there no module named Leap?
 
+import numpy as np
+
 import constants
 from pygameWindow_Del03 import PYGAME_WINDOW_Del03
 
@@ -14,6 +16,8 @@ class DELIVERABLE:
         self.controller = Leap.Controller()
         self.pygameWindow = PYGAME_WINDOW_Del03()
         self.frame = self.controller.frame()
+        self.currentNumberOfHands = 0
+        self.previousNumberOfHands = 0
 
         #Could just bring all of these variables over from constants.py?
         self.x = x
@@ -22,8 +26,10 @@ class DELIVERABLE:
         self.xMax = xMax
         self.yMin = yMin
         self.yMax = yMax
-
         #should these even be here?
+
+        #3D matrix as a new variable:
+        self.gestureData = np.zeros((5, 4, 6), dtype = 'f')
 
 
     #copied Scale() over from Del01
@@ -31,11 +37,12 @@ class DELIVERABLE:
         screenwidth = winMax - winMin
         scalar = 3
         ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
-        print(ratio)
+        #print(ratio)
         return int((ratio) * (screenwidth))
 
     def Handle_Vector_From_Leap(self, v):
         self.xPre = int(v[0])
+        self.zPre = int(v[1])
         self.yPre = int(v[2])  # why not v[1]?
         # axis control (leapMin and leapMax)
         if self.xPre < self.xMin: #I feel like making all of this self-referencing is broken
@@ -48,49 +55,101 @@ class DELIVERABLE:
             self.yPre = self.yMax
         xv = self.Scale(self.xPre, constants.xMin, constants.xMax, 0, constants.pygameWindowWidth)
         yv = self.Scale(self.yPre, constants.yMin, constants.yMax, 0, constants.pygameWindowDepth)
-        return(xv, yv)
+        zv = self.zPre
+
+        return(xv, yv, zv) #include zv even though it isn't scaled?
 
 
     def Handle_Bone(self, bone):
         base = bone.prev_joint
         tip = bone.next_joint
-        xBase, yBase = self.Handle_Vector_From_Leap(base)
-        xTip, yTip = self.Handle_Vector_From_Leap(tip)
+        xBase, yBase, zBase = self.Handle_Vector_From_Leap(base)
+        xTip, yTip, zTip = self.Handle_Vector_From_Leap(tip)
 
-        print(self.numberOfHands)
-        if self.numberOfHands == 1:
+        #print(self.currentNumberOfHands)
+        if self.currentNumberOfHands == 1:
             self.pygameWindow.Draw_Line(constants.green, xBase, yBase, xTip, yTip, (3 - b))
-        elif self.numberOfHands == 2:
+        elif self.currentNumberOfHands == 2:
             self.pygameWindow.Draw_Line(constants.red, xBase, yBase, xTip, yTip, (3 - b))
 
-        print(xBase, yBase)
-        print(xTip, yTip)
+        for i in range(0,5):    # make sure you're not taking scaled values!!!!
+            for j in range(0,4):
+                self.gestureData[i, j, 0] = base[0]
+                self.gestureData[i, j, 1] = base[1]
+                self.gestureData[i, j, 2] = base[2]
+                self.gestureData[i, j, 3] = tip[0]
+                self.gestureData[i, j, 4] = tip[1]
+                self.gestureData[i, j, 5] = tip[2]
+                print(self.gestureData)
+        exit()
+                # i and j are changing in here, but not in the i for loop print(i,j)
+
+
+
 
     def Handle_Finger(self, finger):
         global b
+
         for b in range(0, 4):
             bone = finger.bone(b)
             self.Handle_Bone(bone)
 
         xv = self.Scale(self.xPre, self.xMin, self.xMax, 0, constants.pygameWindowWidth)
         yv = self.Scale(self.yPre, self.yMin, self.yMax, 0, constants.pygameWindowDepth)
-        print('v', xv, yv)
+        #print('v', xv, yv)
         # if xv < 0:
         #      xv = 0
         # if xv > 1200:
         #      xv = 1200
+
         return (xv, yv)
 
-    def Handle_Frame_Init(self):  # This function works in Del01, but fails if I move it to pygameWindow
+    def Recording_Is_Ending(self):
+        print(self.gestureData[0, 3, :])
+        #print(self.gestureData[1,3,3:6])
+        print(self.gestureData)
+        exit()
+        # print('recording is ending')
 
+    def Handle_Frame_Init(self):
         handList = self.frame.hands
-        self.currentNumberOfHands = len(handList) #can I define a self.variable down here?
-        if self.numberOfHands > 0:  # use isempty to track values of objects in the list
+        self.currentNumberOfHands = len(handList)
+        if self.currentNumberOfHands > 0:  # use isempty to track values of objects in the list
+            #print('current', self.currentNumberOfHands, 'prev', self.previousNumberOfHands)
+            if (self.previousNumberOfHands == 2) & (self.currentNumberOfHands == 1):
+                self.Recording_Is_Ending()
             for hand in handList:
                 fingers = hand.fingers
                 for finger in fingers:
                     self.Handle_Finger(finger)
             self.previousNumberOfHands = self.currentNumberOfHands
+
+    def Handle_Frame_Init_Recording(self):
+
+                # I need a way to make this only take the primary hand!!!!
+
+                # if previousNumberOfHands != 1 & currentNumberOfHands = 1
+                # self.primaryHand =
+
+        handList = self.frame.hands
+        primaryHandList = handList[0]
+        primaryFingers = primaryHandList.fingers
+        # print(primaryHandList)
+        # print(primaryFingers)
+        self.currentNumberOfHands = len(handList)
+        if self.currentNumberOfHands > 0:  # use isempty to track values of objects in the list
+        # print('current', self.currentNumberOfHands, 'prev', self.previousNumberOfHands)
+            if (self.previousNumberOfHands == 2) & (self.currentNumberOfHands == 1):                        self.Recording_Is_Ending()
+            for hand in handList:
+                fingers = hand.fingers
+                for finger in fingers:
+                    self.Handle_Finger(finger)
+            for finger in primaryFingers:
+                self.Handle_Finger(finger)
+            self.previousNumberOfHands = self.currentNumberOfHands
+
+
+            #If there were previously 2 hands over the device but now there is only 1, end recording
 
     def Run_Forever(self):
         runStatus = True  # this is now a switch
@@ -101,7 +160,7 @@ class DELIVERABLE:
 
             self.frame = self.controller.frame()
 
-            self.Handle_Frame_Init()
+            self.Handle_Frame_Init_Recording() #originally self.Handle_Frame_Init()
 
             self.pygameWindow.Reveal()  # show drawn material to the user
 
