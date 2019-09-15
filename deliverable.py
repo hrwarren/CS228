@@ -60,7 +60,8 @@ class DELIVERABLE:
         return(xv, yv, zv) #include zv even though it isn't scaled?
 
 
-    def Handle_Bone(self, bone):
+    def Handle_Bone(self, bone,i,b):
+       # make sure you're not taking scaled values!!!!
         base = bone.prev_joint
         tip = bone.next_joint
         xBase, yBase, zBase = self.Handle_Vector_From_Leap(base)
@@ -72,27 +73,24 @@ class DELIVERABLE:
         elif self.currentNumberOfHands == 2:
             self.pygameWindow.Draw_Line(constants.red, xBase, yBase, xTip, yTip, (3 - b))
 
-        for i in range(0,5):    # make sure you're not taking scaled values!!!!
-            for j in range(0,4):
-                self.gestureData[i, j, 0] = base[0]
-                self.gestureData[i, j, 1] = base[1]
-                self.gestureData[i, j, 2] = base[2]
-                self.gestureData[i, j, 3] = tip[0]
-                self.gestureData[i, j, 4] = tip[1]
-                self.gestureData[i, j, 5] = tip[2]
-                print(self.gestureData)
-        exit()
+        if self.Recording_Is_Ending:
+            self.gestureData[i, b, 0] = base[0]   #x
+            self.gestureData[i, b, 1] = base[1]   #y
+            self.gestureData[i, b, 2] = base[2]   #z
+            self.gestureData[i, b, 3] = tip[0]
+            self.gestureData[i, b, 4] = tip[1]
+            self.gestureData[i, b, 5] = tip[2]
+        #print(i,b)
+
                 # i and j are changing in here, but not in the i for loop print(i,j)
 
 
-
-
-    def Handle_Finger(self, finger):
-        global b
+    def Handle_Finger(self, finger,i):
+       # global b
 
         for b in range(0, 4):
             bone = finger.bone(b)
-            self.Handle_Bone(bone)
+            self.Handle_Bone(bone, i, b)
 
         xv = self.Scale(self.xPre, self.xMin, self.xMax, 0, constants.pygameWindowWidth)
         yv = self.Scale(self.yPre, self.yMin, self.yMax, 0, constants.pygameWindowDepth)
@@ -105,7 +103,7 @@ class DELIVERABLE:
         return (xv, yv)
 
     def Recording_Is_Ending(self):
-        print(self.gestureData[0, 3, :])
+        #print(self.gestureData[0, 3, :])
         #print(self.gestureData[1,3,3:6])
         print(self.gestureData)
         exit()
@@ -114,22 +112,21 @@ class DELIVERABLE:
     def Handle_Frame_Init(self):
         handList = self.frame.hands
         self.currentNumberOfHands = len(handList)
+
         if self.currentNumberOfHands > 0:  # use isempty to track values of objects in the list
             #print('current', self.currentNumberOfHands, 'prev', self.previousNumberOfHands)
+
             if (self.previousNumberOfHands == 2) & (self.currentNumberOfHands == 1):
                 self.Recording_Is_Ending()
+
             for hand in handList:
                 fingers = hand.fingers
+
                 for finger in fingers:
                     self.Handle_Finger(finger)
             self.previousNumberOfHands = self.currentNumberOfHands
 
     def Handle_Frame_Init_Recording(self):
-
-                # I need a way to make this only take the primary hand!!!!
-
-                # if previousNumberOfHands != 1 & currentNumberOfHands = 1
-                # self.primaryHand =
 
         handList = self.frame.hands
         primaryHandList = handList[0]
@@ -142,10 +139,14 @@ class DELIVERABLE:
             if (self.previousNumberOfHands == 2) & (self.currentNumberOfHands == 1):                        self.Recording_Is_Ending()
             for hand in handList:
                 fingers = hand.fingers
+                i = -1  # if it's stupid and it works, it ain't stupid
+
                 for finger in fingers:
-                    self.Handle_Finger(finger)
+                    self.Handle_Finger(finger,i)
+
             for finger in primaryFingers:
-                self.Handle_Finger(finger)
+                i = i+1
+                self.Handle_Finger(finger,i)
             self.previousNumberOfHands = self.currentNumberOfHands
 
 
