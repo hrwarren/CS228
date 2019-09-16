@@ -1,7 +1,5 @@
 import numpy as np
-import pickle
-import os
-import constants
+import pickle, os, constants, time
 from pygameWindow_Del03 import PYGAME_WINDOW_Del03
 
 class READER:
@@ -40,14 +38,17 @@ class READER:
             print('I did something')
 
     def Draw_Gesture(self, i):
+        self.pygameWindow.Prepare()
+        # print(self.gestureData)
         self.pickle_in = open('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\gesture{}.p'.format(i), 'rb')
+        'userData/gesture{}.p'.format(i)
         self.gestureData = pickle.load(self.pickle_in)
         for g in range(0,6):
             for i in range(0,5):
                 for j in range(0,4):
-                    currentBone = self.gestureData[i, j, g]
+                    # currentBone = self.gestureData[i, j, g]
                     xBasePre = self.gestureData[i,j,0]
-                    yBasePre = self.gestureData[i,j,1]
+                    yBasePre = self.gestureData[i,j,2]
                     xTipPre = self.gestureData[i,j,3]
                     yTipPre = self.gestureData[i,j,5]
 
@@ -56,20 +57,19 @@ class READER:
                     xTip = self.Scale(xTipPre, self.xMin, self.xMax, 0, constants.pygameWindowWidth)
                     yTip = self.Scale(yTipPre, self.yMin, self.yMax, 0, constants.pygameWindowWidth)
 
-                    #y, constants.yMin, constants.yMax, 0, constants.pygameWindowDepth
 
-                    pygameWindow_Del03.Draw_Line()
-                    print(i, xBase, yBase)
-                    print(j, xTip, yTip)
+                    print(i,j,xBasePre, yBasePre, xBase,yBase, xTipPre, yTipPre, xTip,yTip)
 
+                    self.pygameWindow.Draw_Line(constants.blue, xBase, yBase, xTip, yTip, 1)
+                    # print(i, xBase, yBase)
+                    # print(j, xTip, yTip)
 
+        self.pygameWindow.Reveal()
+        time.sleep(0.8)
                 # self.gestureData[i, b, 0] = base[0]  # x
                 # self.gestureData[i, b, 1] = base[1]  # y
                 # self.gestureData[i, b, 2] = base[2]  # z
 
-        self.pygameWindow.Prepare()
-        #print(self.gestureData)
-        self.pygameWindow.Reveal()
         #print(self.gestureData)
         print('I did something')
 

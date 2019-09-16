@@ -92,10 +92,10 @@ class DELIVERABLE:
         elif self.currentNumberOfHands == 2:
             self.pygameWindow.Draw_Line(constants.red, xBase, yBase, xTip, yTip, (3 - b))
 
-        if self.Recording_Is_Ending:
+        if self.Recording_Is_Ending:  #eventually use a low-pass filter based on velocity of the hand to determine when to capture?
             self.gestureData[i, b, 0] = base[0]   #x
             self.gestureData[i, b, 1] = base[1]   #y
-            self.gestureData[i, b, 2] = base[2]   #z
+            self.gestureData[i, b, 2] = base[2]   #z, but y for our purposes
             self.gestureData[i, b, 3] = tip[0]
             self.gestureData[i, b, 4] = tip[1]
             self.gestureData[i, b, 5] = tip[2]
