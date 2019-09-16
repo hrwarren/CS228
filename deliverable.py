@@ -6,6 +6,8 @@ import Leap #why is there no module named Leap?
 
 import numpy as np
 
+import pickle
+
 import constants
 from pygameWindow_Del03 import PYGAME_WINDOW_Del03
 
@@ -30,6 +32,7 @@ class DELIVERABLE:
 
         #3D matrix as a new variable:
         self.gestureData = np.zeros((5, 4, 6), dtype = 'f')
+        self.gestureNum = 0
 
 
     #copied Scale() over from Del01
@@ -102,11 +105,21 @@ class DELIVERABLE:
 
         return (xv, yv)
 
+    def Save_Gesture(self):
+
+        #You can't keep this named as giantAssDirectory
+        giantAssDirectory = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\gesture{}.p'.format(self.gestureNum)
+        pickle_out = open(giantAssDirectory, 'wb')
+        pickle.dump(self.gestureData, pickle_out)
+        pickle_out.close()
+        print('I did something')
+
     def Recording_Is_Ending(self):
         #print(self.gestureData[0, 3, :])
         #print(self.gestureData[1,3,3:6])
         print(self.gestureData)
-        exit()
+        self.Save_Gesture()
+        self.gestureNum = self.gestureNum + 1
         # print('recording is ending')
 
     def Handle_Frame_Init(self):
