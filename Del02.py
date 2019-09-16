@@ -25,12 +25,27 @@ controller = Leap.Controller()
 
 runStatus = True  # this is now a switch
 
-def Scale(coord, leapMin, leapMax, winMin, winMax): #this Min could be zero dammit
+# def Scale(coord, leapMin, leapMax, winMin, winMax): #this Min could be zero dammit
+#     screenwidth = winMax - winMin
+#     scalar = 2
+#     ratio = (((scalar*coord) + ((leapMax-leapMin)/2)) / (leapMax - leapMin))
+#     print(ratio)
+#     return int((ratio) * (screenwidth))
+
+# def Scale(coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
+#     screenwidth = winMax - winMin
+#     #scalar = 3 would normally multiply coord
+#     coordScaled = ((((coord - (leapMax-leapMin)) * screenwidth)) / 2) / (leapMax - leapMin)
+#     return(int(coordScaled))
+
+def Scale(coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
     screenwidth = winMax - winMin
+    drawwidth = leapMax - leapMin
     scalar = 2
-    ratio = (((scalar*coord) + ((leapMax-leapMin)/2)) / (leapMax - leapMin))
+    #ratio = ((coord - (leapMax - leapMin)) / (winMax - winMin))
+    ratio = (scalar * ((((coord * screenwidth) + drawwidth) / (drawwidth)))) + screenwidth/2
     print(ratio)
-    return int((ratio) * (screenwidth))
+    return (int(ratio))
 
 def Handle_Finger(finger):
     global b
@@ -45,7 +60,7 @@ def Handle_Bone(bone):
     xTip, yTip = Handle_Vector_From_Leap(tip)
     pygameWindow.Draw_Black_Line(xBase, yBase, xTip, yTip, (3-b))
     print(xBase, yBase)
-    print(xTip, yTip)
+    #print(xTip, yTip)
 
 def Handle_Vector_From_Leap(v):
     global xMin
@@ -66,8 +81,9 @@ def Handle_Vector_From_Leap(v):
         yMax = yPre
 
     print('Pre', xPre, yPre)
-    xv = pygameWindow.Scale(xPre, xMin, xMax, 0, constants.pygameWindowWidth)
-    yv = pygameWindow.Scale(yPre, yMin, yMax, 0, constants.pygameWindowDepth)
+    #originally pygameWindow.Scale
+    xv = Scale(xPre, xMin, xMax, 0, constants.pygameWindowWidth)
+    yv = Scale(yPre, yMin, yMax, 0, constants.pygameWindowDepth)
     print('v', xv, yv)
     # if xv < 0:
     #      xv = 0

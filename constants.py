@@ -14,12 +14,13 @@ red = (255,0,0)
 circleVelocity = 4
 
 #Axis values
-xMin = -600.0 #formerly all 600
+xMin = -600.0
 xMax = 600.0
 yMin = -600.0
 yMax = 600.0
 
 x = 0
 y = 0
+
 
 #Maybe make a class out of this later?

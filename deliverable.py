@@ -8,6 +8,9 @@ import numpy as np
 
 import pickle
 
+import os
+import shutil
+
 import constants
 from pygameWindow_Del03 import PYGAME_WINDOW_Del03
 
@@ -35,13 +38,25 @@ class DELIVERABLE:
         self.gestureNum = 0
 
 
-    #copied Scale() over from Del01
+    #copied Scale() over from Del02
     def Scale(self, coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
         screenwidth = winMax - winMin
-        scalar = 3
-        ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
-        #print(ratio)
-        return int((ratio) * (screenwidth))
+        drawwidth = leapMax - leapMin
+        scalar = 2
+        # ratio = ((coord - (leapMax - leapMin)) / (winMax - winMin))
+        ratio = (scalar * ((((coord * screenwidth) + drawwidth) / (drawwidth)))) + screenwidth / 2
+        print(ratio)
+        return (int(ratio))
+
+    #copied Scale() over from Del01
+    # def Scale(self, coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
+    #     screenwidth = winMax - winMin
+    #     scalar = 3
+    #     coordScaled = (scalar * (coord - (leapMax-leapMin)) * screenwidth) / (leapMax - leapMin)
+    #     return(int(coordScaled))
+    #     #ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
+    #     #print(ratio)
+    #     #return int((ratio) * (screenwidth))
 
     def Handle_Vector_From_Leap(self, v):
         self.xPre = int(v[0])
@@ -56,6 +71,7 @@ class DELIVERABLE:
             self.yPre = self.yMin
         if self.yPre > self.yMax:
             self.yPre = self.yMax
+
         xv = self.Scale(self.xPre, constants.xMin, constants.xMax, 0, constants.pygameWindowWidth)
         yv = self.Scale(self.yPre, constants.yMin, constants.yMax, 0, constants.pygameWindowDepth)
         zv = self.zPre
@@ -105,11 +121,21 @@ class DELIVERABLE:
 
         return (xv, yv)
 
-    def Save_Gesture(self):
+    def Clear_User_Data(self):
+        userDataDir = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData'
+        try:
+            shutil.rmtree(userDataDir)
+        except:
+            print('Error while deleting directory')
 
-        #You can't keep this named as giantAssDirectory
-        giantAssDirectory = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\gesture{}.p'.format(self.gestureNum)
-        pickle_out = open(giantAssDirectory, 'wb')
+        #Should I save this to a variable name somewhere?
+        #Also, why does this only work if file explorer is closed???????
+        os.mkdir('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData')
+
+
+    def Save_Gesture(self):
+        userDataDir = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\gesture{}.p'.format(self.gestureNum)
+        pickle_out = open(userDataDir, 'wb')
         pickle.dump(self.gestureData, pickle_out)
         pickle_out.close()
         print('I did something')
@@ -121,6 +147,8 @@ class DELIVERABLE:
         self.Save_Gesture()
         self.gestureNum = self.gestureNum + 1
         # print('recording is ending')
+
+
 
     def Handle_Frame_Init(self):
         handList = self.frame.hands

@@ -43,6 +43,12 @@ class PYGAME_WINDOW:
         print(ratio)
         return int((ratio) * (screenwidth))
 
+    # def Scale(self,coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
+    #     screenwidth = winMax - winMin
+    #     # scalar = 3 would normally multiply coord
+    #     coordScaled = ((((coord - (leapMax - leapMin)) * screenwidth)) / 2) / (leapMax - leapMin)
+    #     return (int(coordScaled))
+
     # def Handle_Vector_From_Leap(self, v):
     #     xPre = int(v[0])
     #     yPre = int(v[2])  # why not v[1]?
