@@ -177,11 +177,11 @@ class DELIVERABLE:
         self.currentNumberOfHands = len(handList)
         if self.currentNumberOfHands > 0:  # use isempty to track values of objects in the list
         # print('current', self.currentNumberOfHands, 'prev', self.previousNumberOfHands)
-            if (self.previousNumberOfHands == 2) & (self.currentNumberOfHands == 1):                        self.Recording_Is_Ending()
+            if (self.previousNumberOfHands == 2) & (self.currentNumberOfHands == 1):
+                self.Recording_Is_Ending()
             for hand in handList:
                 fingers = hand.fingers
                 i = -1  # if it's stupid and it works, it ain't stupid
-
                 for finger in fingers:
                     self.Handle_Finger(finger,i)
 
