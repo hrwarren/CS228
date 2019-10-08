@@ -8,14 +8,72 @@ class FILE_NAMES:
     def Rename_Files(self,path):
         names = os.listdir(self.path)
         for name in names: #length of file directory
-            trid = 0  # how many files have already been renamed for digit d?
-            teid = 0  # how many test files have already been renamed for digit d?
-            print(name)
+            trid0 = 0  # how many files have already been renamed for digit d?
+            teid0 = 0  # how many test files have already been renamed for digit d?
+
+            trid1 = 0
+            teid1 = 0
+
+            trid2 = 0
+            teid2 = 0
+
+            trid3 = 0
+            teid3 = 0
+
+            trid4 = 0
+            teid4 = 0
+
+            trid5 = 0
+            teid5 = 0
+
+            trid6 = 0
+            teid6 = 0
+
+            trid7 = 0
+            teid7 = 0
+
+            trid8 = 0
+            teid8 = 0
+
+            trid9 = 0
+            teid9 = 0
+
             for d in range(0,10):
                 train = 'train' in name
                 test = 'test' in name
                 num = str(d) in name
                 if (train == True) & (num == True): # if the file name has both 'train' and num in it
+                    if d == 0:
+                        oldname = (str(self.path) + '\{}'.format(name))
+                        workaround = 'train'  # This is how we get around the fact that Python hates \t
+                        newname = str(self.path) + '\{}'.format(workaround) + str(d) + '_{}.p'.format(trid0)
+                        os.rename(oldname, newname)
+                        print('rename successful')
+                        trid0 = trid0 + 1
+
+                    if d == 1:
+                        oldname = (str(self.path) + '\{}'.format(name))
+                        workaround = 'train'  # This is how we get around the fact that Python hates \t
+                        newname = str(self.path) + '\{}'.format(workaround) + str(d) + '_{}.p'.format(trid1)
+                        os.rename(oldname, newname)
+                        print('rename successful')
+                        trid1 = trid1 + 1
+
+                    if d == 2:
+                        oldname = (str(self.path) + '\{}'.format(name))
+                        workaround = 'train'  # This is how we get around the fact that Python hates \t
+                        newname = str(self.path) + '\{}'.format(workaround) + str(d) + '_{}.p'.format(trid2)
+                        os.rename(oldname, newname)
+                        print('rename successful')
+                        trid2 = trid2 + 1
+
+                    if d == 3:
+                        oldname = (str(self.path) + '\{}'.format(name))
+                        workaround = 'train'  # This is how we get around the fact that Python hates \t
+                        newname = str(self.path) + '\{}'.format(workaround) + str(d) + '_{}.p'.format(trid3)
+                        os.rename(oldname, newname)
+                        print('rename successful')
+                        trid3 = trid3 + 1
 
                     oldname = (str(self.path) + '\{}'.format(name))
                     workaround = 'train'    # This is how we get around the fact that Python hates \t
@@ -23,6 +81,16 @@ class FILE_NAMES:
                     os.rename(oldname,newname)
                     print('rename successful')
                     trid = trid + 1
+
+                if (train == True) & (num == True) & (d == 0):
+                    oldname = (str(self.path) + '\{}'.format(name))
+                    workaround = 'train'  # This is how we get around the fact that Python hates \t
+                    newname = str(self.path) + '\{}'.format(workaround) + str(d) + '_{}.p'.format(trid0)
+                    os.rename(oldname, newname)
+                    print('rename successful')
+                    trid = trid + 1
+
+                    trid0 = trid0 + 1
 
                     #save it as 'train (number d) _(number f).p' in a different directory
                 if (test == True) & (num == True):

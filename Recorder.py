@@ -136,7 +136,7 @@ class RECORDER:
 
 
     def Save_Gesture(self):
-        userDataDir = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\gtest5.dat' #formerly ....gesture{}.p).format(self.gestureNum)
+        userDataDir = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\gtrain3.p' #formerly ....gesture{}.p).format(self.gestureNum)
         pickle_out = open(userDataDir, 'wb')
         pickle.dump(self.gestureData, pickle_out)
         pickle_out.close()

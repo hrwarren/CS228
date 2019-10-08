@@ -146,7 +146,7 @@ class DELIVERABLE:
         print(self.gestureData)
         self.Save_Gesture()
         self.gestureNum = self.gestureNum + 1
-        # print('recording is ending')
+        print('recording is ending')
 
 
 

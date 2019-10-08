@@ -33,7 +33,7 @@ controller = Leap.Controller()
 frame = controller.frame()
 
 # Loading in the classifier
-clf = pickle.load(open('userData/classifier.p', 'rb'))
+clf = pickle.load(open('userData/classifier101.p', 'rb'))
 
 # Creating a vector to store the 30 features from the Leap Motion data
 
@@ -78,17 +78,8 @@ def Handle_Vector_From_Leap(v):
     global yMax
 
     xPre = int(v[0])
-    yPre = int(v[2]) #why not v[1]?
+    yPre = int(v[2]) # why not v[1]?
     zPre = int(v[1])
-    # axis control (leapMin and leapMax)
-    # if xPre < xMin:
-    #     xMin = xPre
-    # if xPre > xMax:
-    #     xMax = xPre
-    # if yPre < yMin:
-    #     yMin = yPre
-    # if yPre > yMax:
-    #     yMax = yPre
 
     # originally pygameWindow.Scale
     xv = Scale(xPre, xMin, xMax, 0, constants.pygameWindowWidth)

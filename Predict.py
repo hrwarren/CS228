@@ -14,10 +14,10 @@ colors[2,:] = [0.5,0.5,1]
 x = knn.data[:, 0]
 y = knn.data[:, 1]
 
-trainX = knn.data[::2, 0:3]    #capital X means trainX stores a matrix
+trainX = knn.data[::2, 1:3]    #capital X means trainX stores a matrix
 trainy = knn.target[::2]       #lowercase y means trainy stores a vector
 
-testX = knn.data[1::2, 0:3]
+testX = knn.data[1::2, 1:3]
 testy = knn.target[1::2]
 
 
