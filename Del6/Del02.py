@@ -1,4 +1,5 @@
 import sys
+import time
 
 sys.path.insert(0, '../..')
 sys.path.insert(1, '../../x86')
@@ -33,7 +34,7 @@ controller = Leap.Controller()
 frame = controller.frame()
 
 # Loading in the classifier
-clf = pickle.load(open('userData/classifier101.p', 'rb'))
+clf = pickle.load(open('userData/classifier_30sets_low3.p', 'rb'))
 
 # Creating a vector to store the 30 features from the Leap Motion data
 
@@ -47,7 +48,8 @@ def Scale(coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero da
     screenwidth = winMax - winMin
     drawwidth = leapMax - leapMin
     scalar = 2
-    ratio = (scalar * ((((coord * screenwidth) + drawwidth) / (drawwidth)))) + screenwidth/2
+    ratio = ((coord - leapMin)/drawwidth) * screenwidth
+    #ratio = (scalar * ((((coord * screenwidth) + drawwidth) / (drawwidth)))) + screenwidth/2
     return (int(ratio))
 
 def Handle_Finger(finger):
@@ -109,7 +111,9 @@ def Handle_Frame_Init():  # This function works in Del01, but fails if I move it
                 Handle_Finger(finger)
         # print(testData)
             testData = CenterData(testData)
+            time.sleep(0.02)
             predictedClass = clf.Predict(testData)
+            time.sleep(0.05)
             print(predictedClass)
 
 def CenterData(vec):

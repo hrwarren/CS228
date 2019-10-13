@@ -103,6 +103,7 @@ class RECORDER:
             self.gestureData[i, b, 5, self.gestureIndex] = tip[2]
 
 
+
                 # i and j are changing in here, but not in the i for loop print(i,j)
 
 
@@ -136,7 +137,7 @@ class RECORDER:
 
 
     def Save_Gesture(self):
-        userDataDir = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\gtrain3.p' #formerly ....gesture{}.p).format(self.gestureNum)
+        userDataDir = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\WarrenL_test4.p' #formerly ....gesture{}.p).format(self.gestureNum)
         pickle_out = open(userDataDir, 'wb')
         pickle.dump(self.gestureData, pickle_out)
         pickle_out.close()

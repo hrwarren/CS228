@@ -8,6 +8,18 @@ black = (0,0,0)
 blue = (0,0,255)
 green = (0,255,0)
 red = (255,0,0)
+grey = (192,192,192)
+
+#Where to display the helpful images
+startingImageCoords = (500, -100)
+blankCoords = (500, 10, 400, 241)
+moveLeftImageCoords = (450, -120)
+moveRightImageCoords = (420, -120)
+moveForwardImageCoords = (420, -100)
+moveBackwardImageCoords = (320, -200)
+moveUpImageCoords = (310, -200)
+moveDownImageCoords = (310,-200)
+successImageCoords = (290,-150)
 
 
 #Speed of circle movement

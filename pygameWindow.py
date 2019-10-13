@@ -1,4 +1,5 @@
 import pygame
+import time
 import constants
 import sys
 sys.path.insert(0, '..')
@@ -42,6 +43,54 @@ class PYGAME_WINDOW:
         ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
         print(ratio)
         return int((ratio) * (screenwidth))
+
+    def ShowInitialImage(self):
+        image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\HandOverLeapVisual_cropped.jpg')
+        self.screen.blit(image, constants.startingImageCoords)
+
+
+    def clearImage(self):
+        pygame.draw.rect(self.screen, constants.white, constants.blankCoords)
+
+        #self.screen.blit(background, constants.blankCoords)
+        #pygame.Surface.fill(constants.black,background)
+
+    def showMoveRightImage(self):
+        image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\MoveRight.jpg')
+        self.screen.blit(image, constants.moveRightImageCoords)
+
+    def showMoveLeftImage(self):
+        image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\MoveLeft.jpg')
+        self.screen.blit(image, constants.moveLeftImageCoords)
+
+    def showMoveForwardImage(self):
+        image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\MoveForward.jpg')
+        self.screen.blit(image, constants.moveForwardImageCoords)
+
+    def showMoveBackwardImage(self):
+        image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\MoveBackward.jpg')
+        self.screen.blit(image, constants.moveBackwardImageCoords)
+
+    def showMoveUpImage(self):
+        image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\MoveUp.jpg')
+        self.screen.blit(image, constants.moveUpImageCoords)
+
+    def showMoveDownImage(self):
+        image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\MoveDown.jpg')
+        self.screen.blit(image, constants.moveDownImageCoords)
+
+    def showSuccessImage(self):
+        image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Success.jpg')
+        self.screen.blit(image, constants.successImageCoords)
+
+    def showNumToSign(self, num):
+        if num == 0:
+            image = pygame.image.load()
+            
+
+        # pygame.draw.polygon(self.screen, constants.grey, [(600,600), (600,400), (400,400), (400,600)])
+        # pygame.draw.polygon(self.screen, constants.green, [(580,510),(580,490),(40)])
+
 
     # def Scale(self,coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
     #     screenwidth = winMax - winMin

@@ -1,6 +1,10 @@
 import pickle
 import os
 
+# what if we just put everything in a loop? just add every file's contents to the data one by one?
+# and we didn't care what it was called?
+
+
 class FILE_NAMES:
     def __init__(self,path):
         self.path = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\Del6\userData'
