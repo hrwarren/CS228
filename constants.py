@@ -18,8 +18,10 @@ moveRightImageCoords = (420, -120)
 moveForwardImageCoords = (420, -100)
 moveBackwardImageCoords = (320, -200)
 moveUpImageCoords = (310, -200)
-moveDownImageCoords = (310,-200)
-successImageCoords = (290,-150)
+moveDownImageCoords = (310, -200)
+successImageCoords = (290, -150)
+numImageCoords = (500, -10)
+digitImageCoords = (300, 300)
 
 
 #Speed of circle movement

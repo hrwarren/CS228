@@ -21,6 +21,14 @@ set_name = 'Soccorsi_test0'
 pickle_in = open('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\Del6\UserData\{}.p'.format(set_name), 'rb')
 test0_b = pickle.load(pickle_in)
 
+set_name = 'Warren_train0'
+pickle_in = open('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\Del6\UserData\{}.p'.format(set_name), 'rb')
+train0_c = pickle.load(pickle_in)
+set_name = 'Warren_test0'
+pickle_in = open('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\Del6\UserData\{}.p'.format(set_name), 'rb')
+test0_c = pickle.load(pickle_in)
+
+
 
 
 set_name = 'Liu_train2'
@@ -50,15 +58,16 @@ test5_b = pickle.load(pickle_in)
 # copy data to two files with the same "target number"
 
 
-def ReshapeData(set0,set1,set2,set3,set4):
+def ReshapeData(set0,set1,set2,set3,set4,set5):
     X = np.zeros((5000, 5*2*3), dtype = 'f') #originally 5*2*3
     y = np.zeros((5000, 1), dtype = 'f')
     for row in range(0,1000):
         y[row] = 0
         y[row+1000] = 0
-        y[row+2000] = 1
-        y[row+3000] = 5
-        y[row + 4000] = 5
+        y[row+2000] = 0
+        y[row+3000] = 1
+        y[row+4000] = 5
+        y[row + 5000] = 5
 
         col = 0
         for finger in range(0,5): #originally j
@@ -69,6 +78,7 @@ def ReshapeData(set0,set1,set2,set3,set4):
                     X[row + 2000, col] = set2[finger, bone, coord_ind, row]
                     X[row + 3000, col] = set3[finger, bone, coord_ind, row]
                     X[row + 4000, col] = set4[finger, bone, coord_ind, row]
+                    X[row + 5000, col] = set5[finger, bone, coord_ind, row]
                     col = col + 1
                     #Some entries are identical in groups of five???
     return X, y
@@ -110,6 +120,8 @@ train0_a = ReduceData(train0_a)
 test0_a = ReduceData(test0_a)
 train0_b = ReduceData(train0_b)
 test0_b = ReduceData(test0_b)
+train0_c = ReduceData(train0_c)
+test0_c = ReduceData(train0_c)
 
 train1 = ReduceData(train1)
 test1 = ReduceData(test1)
@@ -124,6 +136,8 @@ train0_a = CenterData(train0_a)
 test0_a = CenterData(test0_a)
 train0_b = CenterData(train0_b)
 test0_b = CenterData(test0_b)
+train0_c = CenterData(train0_c)
+test0_c = CenterData(train0_c)
 
 train1 = CenterData(train1)
 test1 = CenterData(test1)
@@ -137,8 +151,8 @@ test5_b = CenterData(test5_b)
 
 
 
-trainX, trainy = ReshapeData(train0_a, train0_b, train1, train5_a, train5_b)
-testX, testy = ReshapeData(test0_a, test0_b, test1, test5_a, test5_b)
+trainX, trainy = ReshapeData(train0_a, train0_b, train0_c, train1, train5_a, train5_b)
+testX, testy = ReshapeData(test0_a, test0_b, test0_c, test1, test5_a, test5_b)
 
 knn.Use_K_Of(15)
 knn.Fit(trainX, trainy)
@@ -155,7 +169,7 @@ count7 = 0
 count8 = 0
 count9 = 0
 
-for row in range(0,5000):
+for row in range(0,6000):
     itemClass = int(testy[row])
     # This works when using the old knn, but fails with Sida's code:
     prediction = int(knn.Predict(testX[row,:]))

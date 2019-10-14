@@ -145,14 +145,14 @@ def CenterData(testData):
 
 
 def HandleState0():
-    global programState
-    pygameWindow.ShowInitialImage()
+    #global programState
+    pygameWindow.showInitialImage()
 
     if len(frame.hands) > 0: #I want to make this a boolean: handOverDevice == True
         programState = 1
 
 def HandleState1():
-    global programState
+    #global programState
     global wrongPosition
 
     Handle_Frame_Init()
@@ -197,7 +197,6 @@ def HandleState1():
         #     pygameWindow.showSuccessImage()
 
         pygameWindow.showSuccessImage()
-        time.sleep(1)
         # start = time.time()
         # elapsed = 0
         # while elapsed <= 3:
@@ -220,23 +219,30 @@ def HandleState1():
 def HandleState2():
     global numToSign
 
-    Handle_Frame_Init()
-
-    numToSign = random.randint(0,9)
+    notDone = True
+    numToSign = random.randint(0, 9)
     pygameWindow.showNumToSign(numToSign)
 
+    Handle_Frame_Init()
 
-    points = 0
-    if predictedClass == numToSign:
-        points = points + 1
-    else:
-        points = 0
+    while notDone:
+        for points in range(0, 10):
+            if predictedClass == numToSign:
+                points = points + 1
+            else:
+                points = 0
+        if points == 10:
+            notDone = False
 
-    if points == 10:
-        programState = 3
+    programState = 3
+
+
+
+
 
 def HandleState3():
     pygameWindow.showSuccessImage()
+    #pause at the reveal to show the success image
 
     if len(frame.Hands) > 0:
         if wrongPosition == False:
@@ -255,7 +261,6 @@ def HandleState3():
 while runStatus:
 
     pygameWindow.Prepare()  # wipe window to prepare for drawing
-
     frame = controller.frame()
 
     if programState == 0:
@@ -264,8 +269,10 @@ while runStatus:
         HandleState1()
     elif programState == 2:
         HandleState2()
-
-
-    #Handle_Frame_Init()
+    elif programState == 3:
+        HandleState3()
 
     pygameWindow.Reveal()  # show drawn material to the user
+
+    if programState == 3:   # pause after reveal to show success image
+        time.sleep(1)

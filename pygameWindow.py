@@ -44,7 +44,7 @@ class PYGAME_WINDOW:
         print(ratio)
         return int((ratio) * (screenwidth))
 
-    def ShowInitialImage(self):
+    def showInitialImage(self):
         image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\HandOverLeapVisual_cropped.jpg')
         self.screen.blit(image, constants.startingImageCoords)
 
@@ -83,10 +83,19 @@ class PYGAME_WINDOW:
         image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Success.jpg')
         self.screen.blit(image, constants.successImageCoords)
 
-    def showNumToSign(self, num):
-        if num == 0:
-            image = pygame.image.load()
-            
+    def showNumToSign(self, num):    # will also contain num as a parameter once I have a photo for each sign
+
+        # For showing each number indvidiually
+        # imageDirectory = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Num'
+        # numImage = pygame.image.load(imageDirectory + '{}'.format(num) + '.jpg')
+        # self.screen.blit(numImage, constants.numImageCoords)
+
+        digitImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Digit{}.jpg'.format(num))
+        self.screen.blit(digitImage, constants.digitImageCoords)
+
+        numImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Num{}.jpg'.format(num))
+        self.screen.blit(numImage, constants.numImageCoords)
+
 
         # pygame.draw.polygon(self.screen, constants.grey, [(600,600), (600,400), (400,400), (400,600)])
         # pygame.draw.polygon(self.screen, constants.green, [(580,510),(580,490),(40)])
