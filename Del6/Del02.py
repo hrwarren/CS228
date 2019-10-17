@@ -34,7 +34,7 @@ controller = Leap.Controller()
 frame = controller.frame()
 
 # Loading in the classifier
-clf = pickle.load(open('userData/classifier.p', 'rb'))
+clf = pickle.load(open('userData/classifier_012356789.p', 'rb'))
 
 # Creating a vector to store the 30 features from the Leap Motion data
 
@@ -47,7 +47,7 @@ testData = np.zeros((1,30), dtype='f')
 def Scale(coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
     screenwidth = winMax - winMin
     drawwidth = leapMax - leapMin
-    scalar = 2
+    scalar = 1
     ratio = ((coord - leapMin)/drawwidth) * screenwidth
     #ratio = (scalar * ((((coord * screenwidth) + drawwidth) / (drawwidth)))) + screenwidth/2
     return (int(ratio))
@@ -65,11 +65,11 @@ def Handle_Bone(bone):
     xBase, yBase, zBase = Handle_Vector_From_Leap(base)
     xTip, yTip, zTip = Handle_Vector_From_Leap(tip)
     if ((b == 0) or (b == 3)):
-        if (k < 30):
-            testData[0, k] = xTip
-            testData[0, k + 1] = yTip
-            testData[0, k + 2] = zTip
-            k = k + 3
+        #if (k < 30):
+        testData[0, k] = tip[0]
+        testData[0, k + 1] = tip[1]
+        testData[0, k + 2] = tip[2]
+        k = k + 3
 
     pygameWindow.Draw_Black_Line(xBase, yBase, xTip, yTip, (3-b))
 
@@ -105,16 +105,16 @@ def Handle_Frame_Init():  # This function works in Del01, but fails if I move it
     if len(handList) > 0:  # or use isempty to track values of objects in the list
         handList = frame.hands
         k = 0
-        for hand in handList:
-            fingers = hand.fingers
-            for finger in fingers:
-                Handle_Finger(finger)
+#        for hand in handList:
+        fingers = handList[0].fingers
+        for finger in fingers:
+            Handle_Finger(finger)
         # print(testData)
-            testData = CenterData(testData)
-            time.sleep(0.02)
-            predictedClass = clf.Predict(testData)
-            time.sleep(0.05)
-            print(predictedClass)
+        testData = CenterData(testData)
+        time.sleep(0.02)
+        predictedClass = clf.Predict(testData)
+        time.sleep(0.05)
+        print(predictedClass)
 
 def CenterData(vec):
     for s in range(0,2):

@@ -9,25 +9,28 @@ import gestureFilenames
 
 knn = knn.KNN()
 
-g = gestureFilenames.GESTURES()
+# g = gestureFilenames.GESTURES()
 
 
 
-def ReshapeData(set0,set1,set2,set3,set4): #,set3,set4,set5,set6,set7,set8,set9):
-    X = np.zeros((5000, 5*2*3), dtype = 'f') # normally 10000
-    y = np.zeros((5000, 1), dtype='f')
+def ReshapeData(set0,set1,set2,set3,set4,set5,set6,set7,set8,set9,set10,set11,set12,set13): #,set3,set4,set5,set6,set7,set8,set9):
+    X = np.zeros((14000, 5*2*3), dtype = 'f') # normally 10000
+    y = np.zeros((14000, 1), dtype='f')
     for row in range(0,1000):
         y[row, 0] = 0
         y[(row + 1000), 0] = 1
-        # y[(row + 2000)] = 2
-        # y[(row + 3000)] = 3
-        # y[(row + 4000)] = 4
-        # y[(row + 5000)] = 5
-        y[(row + 2000)] = 6
-        y[(row + 3000)] = 6
-        y[(row + 4000)] = 7
-        # y[(row + 8000)] = 8
-        # y[(row + 9000)] = 9
+        y[(row + 2000), 0] = 2
+        y[(row + 3000), 0] = 3
+        y[(row + 4000), 0] = 5
+        y[(row + 5000), 0] = 5
+        y[(row + 6000), 0] = 6
+        y[(row + 7000), 0] = 6
+        y[(row + 8000), 0] = 7
+        y[(row + 9000), 0] = 7
+        y[(row + 10000), 0] = 8
+        y[(row + 11000), 0] = 8
+        y[(row + 12000), 0] = 9
+        y[(row + 12000), 0] = 9
 
 
 
@@ -39,15 +42,19 @@ def ReshapeData(set0,set1,set2,set3,set4): #,set3,set4,set5,set6,set7,set8,set9)
             for bone in range(0,2): #originally k and 0:4 2
                 for coord_ind in range(0,3): #3: #originally m and 0:6 3
                     X[row, col] = set0[finger, bone, coord_ind, row]
-                    X[row + 1000,col] = set1[finger, bone, coord_ind, row]
-                    X[row + 2000,col] = set2[finger, bone, coord_ind, row]
+                    X[row + 1000, col] = set1[finger, bone, coord_ind, row]
+                    X[row + 2000, col] = set2[finger, bone, coord_ind, row]
                     X[row + 3000, col] = set3[finger, bone, coord_ind, row]
                     X[row + 4000, col] = set4[finger, bone, coord_ind, row]
-                    # X[row + 5000, col] = set5[finger, bone, coord_ind, row]
-                    # X[row + 6000, col] = set6[finger, bone, coord_ind, row]
-                    # X[row + 7000, col] = set7[finger, bone, coord_ind, row]
-                    # X[row + 8000, col] = set8[finger, bone, coord_ind, row]
-                    # X[row + 9000, col] = set9[finger, bone, coord_ind, row]
+                    X[row + 5000, col] = set5[finger, bone, coord_ind, row]
+                    X[row + 6000, col] = set6[finger, bone, coord_ind, row]
+                    X[row + 7000, col] = set7[finger, bone, coord_ind, row]
+                    X[row + 8000, col] = set8[finger, bone, coord_ind, row]
+                    X[row + 9000, col] = set9[finger, bone, coord_ind, row]
+                    X[row + 10000, col] = set10[finger, bone, coord_ind, row]
+                    X[row + 11000, col] = set11[finger, bone, coord_ind, row]
+                    X[row + 12000, col] = set12[finger, bone, coord_ind, row]
+                    X[row + 13000, col] = set13[finger, bone, coord_ind, row]
 
                     col = col + 1
 
@@ -97,11 +104,27 @@ def loadFiles(trainFile, testFile):
 
     return Xtrain, Xtest
 
-train_0, test_0 = loadFiles('userData\Clark_train0.p', 'userData\Clark_test0.p')
+# Clark0, Ward3, Ward4, Livingston5, MacMaster6, MacMaster7, Erickson8, Childs9
+
+
+train_0, test_0 = loadFiles('userData\Soccorsi_train0.p', 'userData\Soccorsi_test0.p')
+
 train_1, test_1 = loadFiles('userData\Grasso_train1.p', 'userData\Grasso_test1.p')
 
-train_6, test_6 = loadFiles('userData\Warren_train6.p', 'userData\Warren_test6.p')
-train_6b, test_6b = loadFiles('userData\Peck_train6.p', 'userData\Peck_test6.p')
+train_2, test_2 = loadFiles('userData\Grasso_train2.p', 'userData\Grasso_test2.p')
+
+
+train_3, test_3 = loadFiles('userData\Trinity_train3.p', 'userData\Trinity_test3.p')
+train_3b, test_3b = loadFiles('userData\Ward_train3.p', 'userData\Ward_test3.p')
+
+
+train_5, test_5 = loadFiles('userData\Livingston_train5.p', 'userData\Livingston_test5.p')
+train_5b, test_5b = loadFiles('userData\Deluca_train5.p', 'userData\Deluca_test5.p')
+
+train_6c, test_6c = loadFiles('userData\Picard_train6.p', 'userData\Picard_test6.p')
+train_6b, test_6b = loadFiles('userData\Deso_train6.p', 'userData\Deso_test6.p')
+train_6, test_6 = loadFiles('userData\MacMaster_train6.p', 'userData\MacMaster_test6.p')
+
 # :( MacMaster bad in classifier; Deso good in classifier bad in life, Picard good in classifier bad in life
 # :/ Boland good in classifier and in life, but a lefty; Warren terrible in classifier but okay in life;
 #       Peck good in classifier and okay in life, but you have to point fingers straight down
@@ -115,11 +138,35 @@ train_7b, test_7b = loadFiles('userData\Yeung_train7.p', 'userData\Yeung_test7.p
 #       Enzmann good in classifier terrible in life;
 # :/ Zhang good in classifier okay in life, but a lefty; Erickson terrible in classifier and okay in life
 
+train_8, test_8 = loadFiles('userData\Zonay_train8.p', 'userData\Zonay_test8.p')
+train_8b, test_8b = loadFiles('userData\Zhang_train8.p', 'userData\Zhang_test8.p')
+
+# Erickson made a lot of confusion with 9
+
+train_9, test_9 = loadFiles('userData\Childs_train9.p', 'userData\Childs_test9.p')
+train_9b, test_9b = loadFiles('userData\Zonay_train9.p', 'userData\Zonay_test9.p')
+
 
 
 # these are currently missing all trainX_c
-trainX, trainy = ReshapeData(train_0, train_1, train_6, train_6b, train_7) #, train_7b) #, train2_a, train3_a, train4_a, train5_a, train6_a, train7_a, train8_a, train9_a)
-testX, testy = ReshapeData(test_0, test_1, test_6, test_6b, test_7) #, test_7b) #test2_a, train3_a, test4_a, test5_a, test6_a, test7_a, test8_a, test9_a)
+trainX, trainy = ReshapeData(train_0,
+                             train_1,
+                             train_2,
+                             train_3,
+                             train_5, train_5b,
+                             train_6, train_6b,
+                             train_7, train_7b,
+                             train_8, train_8b,
+                             train_9, train_9b) #, train_7b) #, train2_a, train3_a, train4_a, train5_a, train6_a, train7_a, train8_a, train9_a)
+testX, testy = ReshapeData(test_0,
+                           test_1,
+                           test_2,
+                           test_3,
+                           test_5, test_5b,
+                           test_6, test_6b,
+                           test_7, test_7b,
+                           test_8, test_8b,
+                           test_9, test_9b) #, test_7b) #test2_a, train3_a, test4_a, test5_a, test6_a, test7_a, test8_a, test9_a)
 
 
 
@@ -148,7 +195,7 @@ count8 = 0
 count9 = 0
 
 
-for row in range(0,5000): # normally 0:20000
+for row in range(0,14000): # normally 0:20000
     itemClass = int(testy[row])
     prediction = int(knn.Predict(testX[row,:]))
     actualClass = testy[row]
@@ -185,7 +232,7 @@ print(testy)
 print(testX.shape, testy.shape)
 
 # Saving the classifier
-userDataDir = 'userData\classifier_0167.p'
+userDataDir = 'userData\classifier_012356789.p'
 pickle_out = open(userDataDir, 'wb')
 pickle.dump(knn, open(userDataDir, 'wb'))
 pickle_out.close()

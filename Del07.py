@@ -22,9 +22,10 @@ xMax = constants.xMax
 yMax = constants.yMax
 
 # Turning this into a stateful program
-# But not a stately program. It has no hope of that; it is a disaster
 programState = 0
-handOverDevice = False
+
+# handOverDevice = False
+wrongPosition = True
 
 # Creating a switch
 runStatus = True
@@ -37,13 +38,16 @@ controller = Leap.Controller()
 frame = controller.frame()
 
 # Loading in the classifier
-clf = pickle.load(open('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\Del6\userData\classifier_30sets_low3.p', 'rb'))
+clf = pickle.load(open('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\Del6\userData\classifier_0135679_gettingthere.p'))
 
 # Creating a vector to store the 30 features from the Leap Motion data
 testData = np.zeros((1,30), dtype='f')
 
 # Seed the random number generator
 random.seed()
+
+# Initialize points earned
+points = 0
 
 
 # I feel like I should be making a separate script for a class and shoving
@@ -70,16 +74,12 @@ def Handle_Bone(bone):
     xBase, yBase, zBase = Handle_Vector_From_Leap(base)
     xTip, yTip, zTip = Handle_Vector_From_Leap(tip)
     if ((b == 0) or (b == 3)):
-        if (k < 30):
-            testData[0, k] = xTip
-            testData[0, k + 1] = yTip
-            testData[0, k + 2] = zTip
-            k = k + 3
-    #if the middle finger metacarpal tip (1,1,1) is out of a certain range
-    #tell user to get back in
-    pygameWindow.Draw_Black_Line(xBase, yBase, xTip, yTip, (3-b))
+        testData[0, k] = tip[0]
+        testData[0, k + 1] = tip[1]
+        testData[0, k + 2] = tip[2]
+        k = k + 3
 
-    # tell user to correct x coordinates
+    pygameWindow.Draw_Black_Line(xBase, yBase, xTip, yTip, (3-b))
 
 
 def Handle_Vector_From_Leap(v):
@@ -104,29 +104,27 @@ def Handle_Vector_From_Leap(v):
     return(xv, yv, zv) #zv?
 
 
-def Handle_Frame_Init():  # This function works in Del01, but fails if I move it to pygameWindow
+def Handle_Frame_Init(frame):
     global x
     global y
     global testData
     global k
-    global HandOverDevice
     global predictedClass
 
     handList = frame.hands
-
-    if len(handList) > 0:  # or use isempty to track values of objects in the list
-        HandOverDevice = True
+    if len(handList) > 0:
         handList = frame.hands
         k = 0
-        for hand in handList:
-            fingers = hand.fingers
-            for finger in fingers:
-                Handle_Finger(finger)
+#        for hand in handList:
+        fingers = handList[0].fingers
+        for finger in fingers:
+            Handle_Finger(finger)
         # print(testData)
-            testData = CenterData(testData)
-            time.sleep(0.02)
-            predictedClass = clf.Predict(testData)
-            #print(predictedClass)
+        testData = CenterData(testData)
+        time.sleep(0.02)
+        predictedClass = int(clf.Predict(testData))
+        time.sleep(0.05)
+       # print(predictedClass)
 
 def CenterData(testData):
     for s in range(0,2):
@@ -145,114 +143,103 @@ def CenterData(testData):
 
 
 def HandleState0():
-    #global programState
+    global programState
+
     pygameWindow.showInitialImage()
 
     if len(frame.hands) > 0: #I want to make this a boolean: handOverDevice == True
         programState = 1
 
 def HandleState1():
-    #global programState
+    global programState
     global wrongPosition
+    global numToSign
 
-    Handle_Frame_Init()
     wrongPosition = False
 
-
-    #For some reason, the leap isn't being consistent on its coordinates
-    #Am I using the wrong item in the testData vector?
-    #print(testData[0,14])
-
-    print(testData[0,11:14])
-
-    # Instructions to center hand along x axis
-    if testData[0, 12] < -2.6:
-        pygameWindow.showMoveLeftImage()
-        wrongPosition = True
-    elif testData[0,12] > 0.2:
-        pygameWindow.showMoveRightImage()
-        wrongPosition = True
-
-    # Instructions to center hand along y axis
-    if testData[0, 13] < 4:
-        pygameWindow.showMoveForwardImage()
-        wrongPosition = True
-    elif testData[0,13] > 7.1:
-        pygameWindow.showMoveBackwardImage()
-        wrongPosition = True
-
-    # Instructions to center hand along z axis
-    if testData[0, 14] < 90:
-        pygameWindow.showMoveUpImage()
-        wrongPosition = True
-    elif testData[0,14] > 180:
-        pygameWindow.showMoveDownImage()
-        wrongPosition = True
-
-    if not wrongPosition:
-        # timer = 0
-        # pygameWindow.pygame.time.get_ticks() + 2000
-        #
-        # if timer >= 2:
-        #     pygameWindow.showSuccessImage()
-
-        pygameWindow.showSuccessImage()
-        # start = time.time()
-        # elapsed = 0
-        # while elapsed <= 3:
-        #     elapsed = time.time()-start
-        #     #I can't get the success image to stay put for longer than an instant
-        # if elapsed >= 3:
-        #     elapsed = time.time()-start
-        #     time.sleep(0.5)
-        #     pygameWindow.showSuccessImage()
-        #     time.sleep(0.5)
-
-        programState = 2
-
-        print(wrongPosition)
-        print(programState)
+    print(testData[0,12], testData[0,13], testData[0,14])
 
     if len(frame.hands) == 0:
         programState = 0
 
+    # Hardcoded; will fix later
+    # Instructions to center hand along x axis
+    if testData[0, 12] < -4:
+        pygameWindow.showMoveLeftImage()
+        wrongPosition = True
+    elif testData[0,12] > 4:
+        pygameWindow.showMoveRightImage()
+        wrongPosition = True
+
+    # Instructions to center hand along y axis
+    elif testData[0, 13] < 4:
+        pygameWindow.showMoveForwardImage()
+        wrongPosition = True
+    elif testData[0,13] > 15:
+        pygameWindow.showMoveBackwardImage()
+        wrongPosition = True
+
+    if not wrongPosition:
+        pygameWindow.showSuccessImage()
+        pygameWindow.Reveal()
+        time.sleep(0.5)
+        pygameWindow.Prepare()
+
+        numToSign = random.randint(0, 9)
+        programState = 2
+
+
 def HandleState2():
-    global numToSign
+    global programState
+    global points
 
-    notDone = True
-    numToSign = random.randint(0, 9)
+    if len(frame.hands) == 0:
+        programState = 0
+
     pygameWindow.showNumToSign(numToSign)
+    print(predictedClass, points)
 
-    Handle_Frame_Init()
-
-    while notDone:
-        for points in range(0, 10):
-            if predictedClass == numToSign:
-                points = points + 1
-            else:
-                points = 0
+    if predictedClass == numToSign:
+        points = points + 1
         if points == 10:
-            notDone = False
-
-    programState = 3
-
-
-
-
+            print(points)
+            programState = 3
+    else:
+        points = 0
 
 def HandleState3():
+    global programState
+    global numToSign
+
+    print(programState)
+
     pygameWindow.showSuccessImage()
-    #pause at the reveal to show the success image
+    pygameWindow.Reveal()
+    time.sleep(1)
+    pygameWindow.Prepare()
 
-    if len(frame.Hands) > 0:
-        if wrongPosition == False:
-            programState = 2
+    if len(frame.hands) > 0:
+        # If hand off-center in x direction
+        if testData[0, 12] < -4:
+            wrongPosition = True
+        elif testData[0, 12] > 4:
+            wrongPosition = True
+
+        # If hand off-center in y direction
+        elif testData[0, 13] < 4:
+            wrongPosition = True
+        elif testData[0, 13] > 15:
+            wrongPosition = True
         else:
+            wrongPosition = False
+
+        if wrongPosition:
             programState = 1
+        else:
+            numToSign = random.randint(0, 9)
+            programState = 2
     else:
-        programstate = 0
-
-
+        programState = 0
 
 
 
@@ -262,6 +249,8 @@ while runStatus:
 
     pygameWindow.Prepare()  # wipe window to prepare for drawing
     frame = controller.frame()
+
+    Handle_Frame_Init(frame)
 
     if programState == 0:
         HandleState0()
@@ -274,5 +263,12 @@ while runStatus:
 
     pygameWindow.Reveal()  # show drawn material to the user
 
-    if programState == 3:   # pause after reveal to show success image
-        time.sleep(1)
+
+
+    # # Instructions to center hand along z axis
+    # elif testData[0, 14] < 90:
+    #     pygameWindow.showMoveUpImage()
+    #     wrongPosition = True
+    # elif testData[0,14] > 190:
+    #     pygameWindow.showMoveDownImage()
+    #     wrongPosition = True

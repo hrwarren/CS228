@@ -50,8 +50,8 @@ class PYGAME_WINDOW:
 
 
     def clearImage(self):
-        pygame.draw.rect(self.screen, constants.white, constants.blankCoords)
-
+        #pygame.draw.rect(self.screen, constants.white, constants.blankCoords)
+        self.screen.fill(constants.white)
         #self.screen.blit(background, constants.blankCoords)
         #pygame.Surface.fill(constants.black,background)
 
