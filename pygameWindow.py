@@ -48,13 +48,6 @@ class PYGAME_WINDOW:
         image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\HandOverLeapVisual_cropped.jpg')
         self.screen.blit(image, constants.startingImageCoords)
 
-
-    def clearImage(self):
-        #pygame.draw.rect(self.screen, constants.white, constants.blankCoords)
-        self.screen.fill(constants.white)
-        #self.screen.blit(background, constants.blankCoords)
-        #pygame.Surface.fill(constants.black,background)
-
     def showMoveRightImage(self):
         image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\MoveRight.jpg')
         self.screen.blit(image, constants.moveRightImageCoords)

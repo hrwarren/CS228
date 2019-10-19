@@ -12,6 +12,7 @@ import time
 from pygameWindow import PYGAME_WINDOW
 
 
+
 # Some nice global variables
 x = 0
 y = 0
@@ -58,8 +59,7 @@ def Scale(coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero da
     drawwidth = leapMax - leapMin
     scalar = 1
     ratio = ((coord - leapMin)/drawwidth) * screenwidth * scalar
-    #ratio = (scalar * ((((coord * screenwidth) + drawwidth) / (drawwidth)))) + screenwidth/2
-    return (int(ratio))
+    return int(ratio)
 
 def Handle_Finger(finger):
     global b
