@@ -12,22 +12,27 @@ database = pickle.load(open('userData/database.p','rb'))
 #     }
 # }
 
-import stateHandling
+#############
+Reset()
+#############
+print database
 
-stateHandler = stateHandling.STATE_HANDLER
-print(stateHandler.clf)
-
-
-username = raw_input('Please enter your name: ')
-if username not in database:
-    database[username] = {'logins': 1}
-    print('welcome ' + username + '.')
-
-else:
-    database[username] = {'logins': database[username].get('logins') + 1}
-    print('welcome back ' + username + '.')
-
-
-print(database)
-
-pickle.dump(database,open('userData/database.p', 'wb'))
+#
+# blah = ['0', '2', '3']
+#
+# username = raw_input('Please enter your name: ')
+# if username not in database:
+#     database[username] = {'logins': 1}
+#     print('welcome ' + username + '.')
+#
+# else:
+#     database[username]['logins'] = database[username].get('logins') + 1
+#
+#     # database[username] = {'logins': database[username].get('logins') + 1}
+#     print('welcome back ' + username + '.')
+#
+# print(database)
+#
+# print database[username].get('logins')
+#
+# pickle.dump(database,open('userData/database.p', 'wb'))

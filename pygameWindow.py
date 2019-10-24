@@ -13,6 +13,7 @@ class PYGAME_WINDOW:
         self.screen = pygame.display.set_mode((constants.pygameWindowWidth,constants.pygameWindowDepth)) #note: 300,100 represents screen height and width
         self.controller = Leap.Controller()
         self.frame = self.controller.frame()
+        self.font = pygame.font.Font('freesansbold.ttf',32)
 
     def Prepare(self):
         pygame.event.get()
@@ -88,6 +89,15 @@ class PYGAME_WINDOW:
 
         numImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Num{}.jpg'.format(num))
         self.screen.blit(numImage, constants.numImageCoords)
+
+    def showTimesAttempted(self, times):
+        times = self.font.render(times, True, constants.black)
+        # times = times.get_rect()
+        self.screen.blit(times, constants.timesCoords)
+
+
+
+
 
 
         # pygame.draw.polygon(self.screen, constants.grey, [(600,600), (600,400), (400,400), (400,600)])

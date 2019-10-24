@@ -50,6 +50,50 @@ random.seed()
 # Initialize points earned
 points = 0
 
+# The vector of dictionary keys:
+digitsAttempted = ['digit0attempted',
+                   'digit1attempted',
+                   'digit2attempted',
+                   'digit3attempted',
+                   'digit4attempted',
+                   'digit5attempted',
+                   'digit6attempted',
+                   'digit7attempted',
+                   'digit8attempted',
+                   'digit9attempted']
+
+# The empty vector of times things have been drawn
+times = []
+
+
+# Getting username and info
+database = pickle.load(open('userData/database.p','rb'))
+username = raw_input('Please enter your name: ')
+if username not in database:
+    database[username] = {'logins': 1,
+                          digitsAttempted[0]: 0,
+                          digitsAttempted[1]: 0,
+                          digitsAttempted[2]: 0,
+                          digitsAttempted[3]: 0,
+                          digitsAttempted[4]: 0,
+                          digitsAttempted[5]: 0,
+                          digitsAttempted[6]: 0,
+                          digitsAttempted[7]: 0,
+                          digitsAttempted[8]: 0,
+                          digitsAttempted[9]: 0, }
+    print('welcome ' + username + '.')
+
+else:
+    database[username]['logins'] = database[username]['logins'] + 1
+
+    print('welcome back ' + username + '. \n You have logged in {} times.'.format(database[username]['logins'] ))
+
+pickle.dump(database,open('userData/database.p', 'wb'))
+
+userRecord = database[username]
+
+print userRecord
+
 
 # I feel like I should be making a separate script for a class and shoving
 # all of the following functions into it, but I don't have time for that
@@ -192,18 +236,46 @@ def HandleState1():
 def HandleState2():
     global programState
     global points
+    global times
 
     if len(frame.hands) == 0:
+        # database[username][digitsAttempted[numToSign]]= database[username].get(digitsAttempted[numToSign]) + 1
+        # pickle.dump(database, open('userData/database.p', 'wb'))
+
+        for i in range(0, 10):
+            # times = [times, '{}: '.format(i) + '{} \n'.format(userRecord[digitsAttempted[i]])]
+            if numToSign == i:
+                database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
+                pickle.dump(database, open('userData/database.p', 'wb'))
+                print database[username][digitsAttempted[i]]
         programState = 0
 
+    # times = '0: {}\n'.format(userRecord[digitsAttempted[0]]) + '1: {}\n'.format(userRecord[digitsAttempted[1]]) + '2: {}\n'.format(userRecord[digitsAttempted[2]]) + '3: {}\n'.format(userRecord[digitsAttempted[3]]) + '4: {}\n'.format(userRecord[digitsAttempted[4]]) + '5: {}\n'.format(userRecord[digitsAttempted[5]]) + '6: {}\n'.format(userRecord[digitsAttempted[6]]) + '7: {}\n'.format(userRecord[digitsAttempted[7]]) +'8: {}\n'.format(userRecord[digitsAttempted[8]]) + '9: {}\n'.format(userRecord[digitsAttempted[9]])
+
+
+    # Just shows the number of times that digit has been attempted
+    times = str(userRecord[digitsAttempted[numToSign]])
+
+    print times
+
     pygameWindow.showNumToSign(numToSign)
+    pygameWindow.showTimesAttempted(times)
+
+
     print(predictedClass, points)
 
     if predictedClass == numToSign:
         points = points + 1
+        time.sleep(0.5)
         if points == 10:
             print(points)
+            for i in range(0, 10):
+                if numToSign == i:
+                    database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
+                    print database[username][digitsAttempted[i]]
+                    pickle.dump(database, open('userData/database.p', 'wb'))
             programState = 3
+
     else:
         points = 0
 
@@ -211,7 +283,7 @@ def HandleState3():
     global programState
     global numToSign
 
-    print(programState)
+    print database[username]
 
     pygameWindow.showSuccessImage()
     pygameWindow.Reveal()
