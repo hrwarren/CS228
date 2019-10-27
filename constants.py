@@ -22,7 +22,8 @@ moveDownImageCoords = (310, -200)
 successImageCoords = (400, -70)
 numImageCoords = (500, -10)
 digitImageCoords = (300, 300)
-timesCoords = (20,20)
+timesAttemptedCoords = (20,20)
+coordVec = [(300,300), (-200,300)]
 
 
 #Speed of circle movement

@@ -53,6 +53,9 @@ points = 0
 # Initialize the counter that determines if digits have been attempted
 start = 0
 
+# Initialize counter of how many times failed
+fail = 0
+
 # The vector of dictionary keys:
 digitsAttempted = ['digit0attempted',
                    'digit1attempted',
@@ -236,6 +239,9 @@ def HandleState1():
     global programState
     global wrongPosition
     global numToSign
+    global fakeNum
+    global realCoord
+    global fakeCoord
     global start
 
     wrongPosition = False
@@ -278,9 +284,10 @@ def HandleState1():
             # if they've done it at least 3 times (in a row?), the program progresses to next digit.
 
             # if the user has not successfully signed digit i at least 3 times:
-
-            if database[username][digitsSucceeded[i]] < 3:
+            if database[username][digitsSucceeded[i]] < 5:
                 start = start + 1
+
+        # choose numToSign based on what numbers have been successfully signed
         if start == 10:
             numToSign = 0
         elif start == 9:
@@ -302,7 +309,20 @@ def HandleState1():
         elif start == 1:
             numToSign = 9
 
-        print 'successes' + str(database[username][digitsSucceeded[numToSign]])
+        # choose random fake number to trick with
+        fakeNum = random.randint(0, 9)
+        if fakeNum == numToSign:
+            fakeNum = random.randint(0,9)
+
+        # choose coordinates for the real digit image
+        # fake coordinates decided by process of elimination
+        realCoord = random.randint(0,1)
+        fakeCoord = random.randint(0,1)
+        while fakeCoord == realCoord:
+            fakeCoord = random.randint(0,1)
+
+
+    #    print 'successes' + str(database[username][digitsSucceeded[numToSign]])
 
                 # if they haven't succeeded on this given digit, add tally
                 # if tally = 10, they haven't succeeded on anything yet
@@ -311,7 +331,7 @@ def HandleState1():
 
         # database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
 
-        print database[username][digitsAttempted[numToSign]]
+        #print database[username][digitsAttempted[numToSign]]
         # pickle.dump(database, open('userData/database.p', 'wb'))
 
         start = 0
@@ -322,6 +342,7 @@ def HandleState2():
     global programState
     global points
     global times
+    global fail #???
 
     if len(frame.hands) == 0:
         database[username][digitsAttempted[numToSign]]= database[username].get(digitsAttempted[numToSign]) + 1
@@ -338,19 +359,41 @@ def HandleState2():
 
 
     # Just shows the number of times that digit has been attempted
-    times = str(database[username][digitsAttempted[numToSign]])
+    timesAttempted = str(database[username][digitsAttempted[numToSign]])
+    timesSucceeded = str(database[username][digitsSucceeded[numToSign]])
 
-    print times
+   # print times
 
     pygameWindow.showNumToSign(numToSign)
-    pygameWindow.showTimesAttempted(times)
+    pygameWindow.showTimes(timesAttempted, constants.timesAttemptedCoords)
+
+    # pygameWindow.showTimes(timesSucceeded, constants.timesSucceededCoords)
 
 
     print(predictedClass, points)
 
+    if points == 0:
+        fail = fail + 1
+
+
+    # if database[username][digitsSucceeded[numToSign]] < 2:
+    if fail < 30:
+        pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+    else:
+        pygameWindow.showRealDigit(numToSign)
+
+    # elif database[username][digitsSucceeded[numToSign]] < 4:
+    #     if fail < 20
+
+
+    # or should it be successes - attempts = 2?
+
+
+
+
     if predictedClass == numToSign:
         points = points + 1
-        time.sleep(0.5)
+        time.sleep(0.3)
         if points == 10:
             database[username][digitsAttempted[numToSign]] = database[username].get(digitsAttempted[numToSign]) + 1
             #pickle.dump(database, open('userData/database.p', 'wb'))
@@ -358,6 +401,7 @@ def HandleState2():
             print database[username][digitsSucceeded[numToSign]]
             pickle.dump(database, open('userData/database.p', 'wb'))
             print(points)
+
 
             programState = 3
 

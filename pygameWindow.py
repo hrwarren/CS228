@@ -2,6 +2,8 @@ import pygame
 import time
 import constants
 import sys
+import random
+import numpy as np
 sys.path.insert(0, '..')
 sys.path.insert(1, '../x86')
 import Leap #still not able to import Leap for some reason???
@@ -77,23 +79,47 @@ class PYGAME_WINDOW:
         image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Success.jpg')
         self.screen.blit(image, constants.successImageCoords)
 
-    def showNumToSign(self, num):    # will also contain num as a parameter once I have a photo for each sign
+    def showNumToSign(self, num):
 
         # For showing each number indvidiually
         # imageDirectory = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Num'
         # numImage = pygame.image.load(imageDirectory + '{}'.format(num) + '.jpg')
         # self.screen.blit(numImage, constants.numImageCoords)
 
-        digitImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Digit{}.jpg'.format(num))
-        self.screen.blit(digitImage, constants.digitImageCoords)
-
         numImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Num{}.jpg'.format(num))
         self.screen.blit(numImage, constants.numImageCoords)
 
-    def showTimesAttempted(self, times):
+    def showRealDigit(self,num):
+        digitImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Digit{}.jpg'.format(num))
+        self.screen.blit(digitImage, constants.digitImageCoords)
+
+    def fakeOut(self, num, fake1, realIndex, fakeIndex):
+        # display real sign at one of 2 potential places
+        coordVec = constants.coordVec
+        digitImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Digit{}.jpg'.format(num))
+        self.screen.blit(digitImage, coordVec[realIndex])
+        print coordVec[realIndex]
+        # coordVec = np.delete(coordVec, 0, realIndex)
+
+        # display fake sign #1 at one of the 2 remaining places
+        fakeImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Digit{}.jpg'.format(fake1))
+
+        self.screen.blit(fakeImage, coordVec[fakeIndex])
+        coordVec = np.delete(coordVec, 0)
+
+        #self.screen.blit('?', constants.qCoords)
+
+    def showOutline(self):
+        self.pygame.draw.rect(self.screen, constants.red, )
+
+    def showTimes(self, times, coords): # for displaying the number of times a number has been tried or succeeded
         times = self.font.render(times, True, constants.black)
         # times = times.get_rect()
-        self.screen.blit(times, constants.timesCoords)
+        self.screen.blit(times, coords)
+
+
+
+
 
 
 
