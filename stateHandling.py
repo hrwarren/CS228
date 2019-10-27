@@ -18,7 +18,7 @@ class STATE_HANDLER:
         self.controller = Leap.Controller()
         self.pygameWindow= PYGAME_WINDOW()
         self.frameHandler = FRAME_HANDLER()
-        self.testData = self.frameHandler.testData
+        #self.testData = self.frameHandler.testData
         self.frame = self.controller.frame()
         self.programState = 0
         self.wrongPosition = True
@@ -34,9 +34,9 @@ class STATE_HANDLER:
 
         self.wrongPosition = False
 
-        print(self.testData[0, 12],    # printing 0 here, but real numbers in frameHandling
-              self.testData[0, 13],
-              self.testData[0, 14])
+        print(self.frameHandler.testData[0, 12],    # printing 0 here, but real numbers in frameHandling
+              self.frameHandler.testData[0, 13],
+              self.frameHandler.testData[0, 14])
 
         if len(frame.hands) == 0:
             self.programState = 0

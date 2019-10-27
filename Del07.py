@@ -50,6 +50,9 @@ random.seed()
 # Initialize points earned
 points = 0
 
+# Initialize the counter that determines if digits have been attempted
+start = 0
+
 # The vector of dictionary keys:
 digitsAttempted = ['digit0attempted',
                    'digit1attempted',
@@ -62,6 +65,18 @@ digitsAttempted = ['digit0attempted',
                    'digit8attempted',
                    'digit9attempted']
 
+digitsSucceeded = ['digit0succeeded',
+                   'digit1succeeded',
+                   'digit2succeeded',
+                   'digit3succeeded',
+                   'digit4succeeded',
+                   'digit5succeeded',
+                   'digit6succeeded',
+                   'digit7succeeded',
+                   'digit8succeeded',
+                   'digit9succeeded']
+
+
 # The empty vector of times things have been drawn
 times = []
 
@@ -70,18 +85,41 @@ times = []
 database = pickle.load(open('userData/database.p','rb'))
 username = raw_input('Please enter your name: ')
 if username not in database:
-    database[username] = {'logins': 1,
-                          digitsAttempted[0]: 0,
-                          digitsAttempted[1]: 0,
-                          digitsAttempted[2]: 0,
-                          digitsAttempted[3]: 0,
-                          digitsAttempted[4]: 0,
-                          digitsAttempted[5]: 0,
-                          digitsAttempted[6]: 0,
-                          digitsAttempted[7]: 0,
-                          digitsAttempted[8]: 0,
-                          digitsAttempted[9]: 0, }
+    for i in range(0,10):
+        database[username] = {'logins': 1,
+                              digitsAttempted[0]: 0,
+                              digitsSucceeded[0]: 0,
+
+                              digitsAttempted[1]: 0,
+                              digitsSucceeded[1]: 0,
+
+                              digitsAttempted[2]: 0,
+                              digitsSucceeded[2]: 0,
+
+                              digitsAttempted[3]: 0,
+                              digitsSucceeded[3]: 0,
+
+                              digitsAttempted[4]: 0,
+                              digitsSucceeded[4]: 0,
+
+                              digitsAttempted[5]: 0,
+                              digitsSucceeded[5]: 0,
+
+                              digitsAttempted[6]: 0,
+                              digitsSucceeded[6]: 0,
+
+                              digitsAttempted[7]: 0,
+                              digitsSucceeded[7]: 0,
+
+                              digitsAttempted[8]: 0,
+                              digitsSucceeded[8]: 0,
+
+                              digitsAttempted[9]: 0,
+                              digitsSucceeded[9]: 0,
+                              }
+
     print('welcome ' + username + '.')
+    print database[username]
 
 else:
     database[username]['logins'] = database[username]['logins'] + 1
@@ -198,6 +236,7 @@ def HandleState1():
     global programState
     global wrongPosition
     global numToSign
+    global start
 
     wrongPosition = False
 
@@ -229,7 +268,53 @@ def HandleState1():
         time.sleep(0.5)
         pygameWindow.Prepare()
 
-        numToSign = random.randint(0, 9)
+
+
+        for i in range(0, 10):
+            # if userRecord[digitsSucceeded[i]] == 0:
+
+            # the program is seeing how many times the user has successfully signed.
+            # so, consulting the number of succeeded repetitions.
+            # if they've done it at least 3 times (in a row?), the program progresses to next digit.
+
+            # if the user has not successfully signed digit i at least 3 times:
+
+            if database[username][digitsSucceeded[i]] < 3:
+                start = start + 1
+        if start == 10:
+            numToSign = 0
+        elif start == 9:
+            numToSign = 1
+        elif start == 8:
+            numToSign = 2
+        elif start == 7:
+            numToSign = 3
+        elif start == 6:
+            numToSign = 4
+        elif start == 5:
+            numToSign = 5
+        elif start == 4:
+            numToSign = 6
+        elif start == 3:
+            numToSign = 7
+        elif start == 2:
+            numToSign = 8
+        elif start == 1:
+            numToSign = 9
+
+        print 'successes' + str(database[username][digitsSucceeded[numToSign]])
+
+                # if they haven't succeeded on this given digit, add tally
+                # if tally = 10, they haven't succeeded on anything yet
+                # tell them to sign 0
+
+
+        # database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
+
+        print database[username][digitsAttempted[numToSign]]
+        # pickle.dump(database, open('userData/database.p', 'wb'))
+
+        start = 0
         programState = 2
 
 
@@ -239,22 +324,21 @@ def HandleState2():
     global times
 
     if len(frame.hands) == 0:
-        # database[username][digitsAttempted[numToSign]]= database[username].get(digitsAttempted[numToSign]) + 1
-        # pickle.dump(database, open('userData/database.p', 'wb'))
+        database[username][digitsAttempted[numToSign]]= database[username].get(digitsAttempted[numToSign]) + 1
+        pickle.dump(database, open('userData/database.p', 'wb'))
 
-        for i in range(0, 10):
-            # times = [times, '{}: '.format(i) + '{} \n'.format(userRecord[digitsAttempted[i]])]
-            if numToSign == i:
-                database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
-                pickle.dump(database, open('userData/database.p', 'wb'))
-                print database[username][digitsAttempted[i]]
+        # for i in range(0, 10):
+        #     # times = [times, '{}: '.format(i) + '{} \n'.format(userRecord[digitsAttempted[i]])]
+        #     if numToSign == i:
+        #         database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
+        #         pickle.dump(database, open('userData/database.p', 'wb'))
+        #         print database[username][digitsAttempted[i]]
         programState = 0
 
-    # times = '0: {}\n'.format(userRecord[digitsAttempted[0]]) + '1: {}\n'.format(userRecord[digitsAttempted[1]]) + '2: {}\n'.format(userRecord[digitsAttempted[2]]) + '3: {}\n'.format(userRecord[digitsAttempted[3]]) + '4: {}\n'.format(userRecord[digitsAttempted[4]]) + '5: {}\n'.format(userRecord[digitsAttempted[5]]) + '6: {}\n'.format(userRecord[digitsAttempted[6]]) + '7: {}\n'.format(userRecord[digitsAttempted[7]]) +'8: {}\n'.format(userRecord[digitsAttempted[8]]) + '9: {}\n'.format(userRecord[digitsAttempted[9]])
 
 
     # Just shows the number of times that digit has been attempted
-    times = str(userRecord[digitsAttempted[numToSign]])
+    times = str(database[username][digitsAttempted[numToSign]])
 
     print times
 
@@ -268,12 +352,13 @@ def HandleState2():
         points = points + 1
         time.sleep(0.5)
         if points == 10:
+            database[username][digitsAttempted[numToSign]] = database[username].get(digitsAttempted[numToSign]) + 1
+            #pickle.dump(database, open('userData/database.p', 'wb'))
+            database[username][digitsSucceeded[numToSign]] = database[username].get(digitsSucceeded[numToSign]) + 1
+            print database[username][digitsSucceeded[numToSign]]
+            pickle.dump(database, open('userData/database.p', 'wb'))
             print(points)
-            for i in range(0, 10):
-                if numToSign == i:
-                    database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
-                    print database[username][digitsAttempted[i]]
-                    pickle.dump(database, open('userData/database.p', 'wb'))
+
             programState = 3
 
     else:
@@ -308,8 +393,9 @@ def HandleState3():
         if wrongPosition:
             programState = 1
         else:
-            numToSign = random.randint(0, 9)
-            programState = 2
+            if database[username][digitsSucceeded[i]] < 3:
+                numToSign = numToSign
+                programState = 2
     else:
         programState = 0
 

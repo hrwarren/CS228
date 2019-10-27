@@ -19,6 +19,7 @@ class FRAME_HANDLER:
 
         self.clf = pickle.load(open('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\Del6\userData\classifier_0135679_gettingthere.p'))
         self.testData = np.zeros((1,30), dtype='f')
+        self.k = 0
 
     def CenterData(self, data):
         for s in range(0, 2):
@@ -53,16 +54,16 @@ class FRAME_HANDLER:
             self.Handle_Bone(bone)
 
     def Handle_Bone(self,bone):
-        global k
+        #global k
         base = bone.prev_joint
         tip = bone.next_joint
         xBase, yBase, zBase = self.Handle_Vector_From_Leap(base)
         xTip, yTip, zTip = self.Handle_Vector_From_Leap(tip)
         if ((b == 0) or (b == 3)):
-            self.testData[0, k] = tip[0]
-            self.testData[0, k + 1] = tip[1]
-            self.testData[0, k + 2] = tip[2]
-            k = k + 3
+            self.testData[0, self.k] = tip[0]
+            self.testData[0, self.k + 1] = tip[1]
+            self.testData[0, self.k + 2] = tip[2]
+            self.k = self.k + 3
 
         self.pygameWindow.Draw_Black_Line(xBase, yBase, xTip, yTip, (3 - b))
         print self.testData
@@ -72,12 +73,12 @@ class FRAME_HANDLER:
     def Handle_Frame_Init(self,frame):
         global x
         global y
-        global k
+        #global k
 
         handList = frame.hands
         if len(handList) > 0:
             handList = frame.hands
-            k = 0
+            self.k = 0
             #        for hand in handList:
             fingers = handList[0].fingers
             for finger in fingers:

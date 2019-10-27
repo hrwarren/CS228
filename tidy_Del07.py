@@ -32,6 +32,8 @@ while True:
         stateHandler.HandleState0(frame)
     if stateHandler.programState == 1:
         stateHandler.HandleState1(frame)
+    # if stateHandler.programState == 2:
+    #     stateHandler.HandleSTate2(frame)
     print stateHandler.programState
 
     pygameWindow.Reveal()
