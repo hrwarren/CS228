@@ -56,6 +56,10 @@ start = 0
 # Initialize counter of how many times failed
 fail = 0
 
+# Init counter of how many seconds have passed since image shown
+sec = 0
+
+
 # The vector of dictionary keys:
 digitsAttempted = ['digit0attempted',
                    'digit1attempted',
@@ -208,7 +212,7 @@ def Handle_Frame_Init(frame):
         testData = CenterData(testData)
         time.sleep(0.02)
         predictedClass = int(clf.Predict(testData))
-        time.sleep(0.05)
+        time.sleep(0.02)
        # print(predictedClass)
 
 def CenterData(testData):
@@ -311,7 +315,7 @@ def HandleState1():
 
         # choose random fake number to trick with
         fakeNum = random.randint(0, 9)
-        if fakeNum == numToSign:
+        while fakeNum == numToSign:
             fakeNum = random.randint(0,9)
 
         # choose coordinates for the real digit image
@@ -343,6 +347,7 @@ def HandleState2():
     global points
     global times
     global fail #???
+    global sec #???
 
     if len(frame.hands) == 0:
         database[username][digitsAttempted[numToSign]]= database[username].get(digitsAttempted[numToSign]) + 1
@@ -375,21 +380,55 @@ def HandleState2():
     if points == 0:
         fail = fail + 1
 
+    if database[username][digitsSucceeded[numToSign]] < 1:
+        if fail < 30:
+            pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+        else:
+            pygameWindow.showRealDigit(numToSign)
+    elif database[username][digitsSucceeded[numToSign]] < 2:
+        if fail < 20:
+            pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+    elif database[username][digitsSucceeded[numToSign]] < 4:
+        if fail < 10:
+            pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+        else:
+            pygameWindow.showRealDigit(numToSign)
+
+# At first, the real and fake digit appear, then the fake disappears
+# if the user takes too long to sign the real digit.
+
+# After a couple successes, the real and fake digit appear so the user
+# can still rely on the picture, but only they already have some idea of
+# how to sign the digit. Then both disappear.
+
+# Finally, no digit appears. The user must sign it on their own.
+
+
+
+# Working with 1st scaffold
+    # if database[username][digitsSucceeded[numToSign]] < 2:
+    #     if fail < 30:
+    #         pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+    #     else:
+    #         pygameWindow.showRealDigit(numToSign)
+    # elif database[username][digitsSucceeded[numToSign]] < 4:
+    #     if fail < 40:
+    #         pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+    #     else:
+    #         pygameWindow.showRealDigit(numToSign)
+
+
 
     # if database[username][digitsSucceeded[numToSign]] < 2:
-    if fail < 30:
-        pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
-    else:
-        pygameWindow.showRealDigit(numToSign)
-
+    #     if fail > 30:
+    #         pygameWindow.showRealDigit(numToSign)
     # elif database[username][digitsSucceeded[numToSign]] < 4:
-    #     if fail < 20
+    #     if fail > 40:
+    #         pygameWindow.showRealDigit(numToSign)
+    #     pygameWindow.Prepare()
 
 
     # or should it be successes - attempts = 2?
-
-
-
 
     if predictedClass == numToSign:
         points = points + 1
@@ -400,9 +439,9 @@ def HandleState2():
             database[username][digitsSucceeded[numToSign]] = database[username].get(digitsSucceeded[numToSign]) + 1
             print database[username][digitsSucceeded[numToSign]]
             pickle.dump(database, open('userData/database.p', 'wb'))
-            print(points)
 
-
+            fail = 0
+            points = 0
             programState = 3
 
     else:

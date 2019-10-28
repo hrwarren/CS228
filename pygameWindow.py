@@ -98,7 +98,6 @@ class PYGAME_WINDOW:
         coordVec = constants.coordVec
         digitImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Digit{}.jpg'.format(num))
         self.screen.blit(digitImage, coordVec[realIndex])
-        print coordVec[realIndex]
         # coordVec = np.delete(coordVec, 0, realIndex)
 
         # display fake sign #1 at one of the 2 remaining places
@@ -109,13 +108,17 @@ class PYGAME_WINDOW:
 
         #self.screen.blit('?', constants.qCoords)
 
-    def showOutline(self):
-        self.pygame.draw.rect(self.screen, constants.red, )
+    def clearDigits(self):
+        pygame.draw.rect(self.screen, constants.white, constants.clear)
+
+    # def showOutline(self):
+    #     self.pygame.draw.rect(self.screen, constants.red, )
 
     def showTimes(self, times, coords): # for displaying the number of times a number has been tried or succeeded
         times = self.font.render(times, True, constants.black)
         # times = times.get_rect()
         self.screen.blit(times, coords)
+
 
 
 

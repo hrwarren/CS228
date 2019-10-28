@@ -25,6 +25,9 @@ digitImageCoords = (300, 300)
 timesAttemptedCoords = (20,20)
 coordVec = [(300,300), (-200,300)]
 
+#rectangle size of the white block that clears the others
+clear = (-200, 300, 600, 300)
+
 
 #Speed of circle movement
 circleVelocity = 4
