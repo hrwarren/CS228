@@ -21,8 +21,21 @@ moveUpImageCoords = (310, -200)
 moveDownImageCoords = (310, -200)
 successImageCoords = (400, -70)
 numImageCoords = (500, -10)
-digitImageCoords = (300, 300)
+digitImageCoords = (350, 360)
 timesAttemptedCoords = (20,20)
+timesComparedCoords = (20,400)
+achievedCoords = [(20, 750),
+                  (50, 750),
+                  (80, 750),
+                  (110, 750),
+                  (140, 750),
+                  (170, 750),
+                  (200, 750),
+                  (230, 750),
+                  (260, 750),
+                  (290, 750),
+                ]
+
 coordVec = [(300,300), (-200,300)]
 
 #rectangle size of the white block that clears the others

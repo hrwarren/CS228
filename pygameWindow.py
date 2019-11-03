@@ -123,17 +123,35 @@ class PYGAME_WINDOW:
         # times = times.get_rect()
         self.screen.blit(times, coords)
 
-    def youFailed(self, prevtime):
-        print (time.time() - prevtime)
+    def youFailed(self):
         self.showFailImage()
         self.Reveal()
         time.sleep(0.5)
         self.Prepare()
-        prevtime = time.time()
+        #prevtime = time.time()
         fail = 0
         points = 0
 
-        return prevtime, fail, points
+        return fail, points
+
+    def showTotalAchieved(self, achievedNum, color, i):
+
+        if color == 'green':
+            achievedNum = self.font.render(str(achievedNum), True, constants.green)
+            self.screen.blit(achievedNum, constants.achievedCoords[i])
+
+        elif color == 'grey':
+            achievedNum = self.font.render(achievedNum, True, constants.grey)
+            self.screen.blit(achievedNum, constants.achievedCoords[i])
+
+        else:
+            achievedNum = self.font.render(achievedNum, True, constants.black)
+            self.screen.blit(achievedNum, constants.achievedCoords[i])
+            print('blit b')
+
+        #
+        #   achieved = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        #
 
 
 

@@ -12,6 +12,14 @@ database = pickle.load(open('userData/database.p','rb'))
 #     }
 # }
 
+
+for user in database:
+    for digitsSucceeded in database[user]:
+        print database[user][digitsSucceeded]
+        if database[user][digitsSucceeded] != 0:
+            database[user]['rank'] =
+
+
 #############
 Reset()
 #############
