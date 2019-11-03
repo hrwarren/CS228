@@ -58,6 +58,7 @@ fail = 0
 
 # Init counter of how many seconds have passed since image shown
 sec = 0
+prevtime = 0
 
 
 # The vector of dictionary keys:
@@ -126,7 +127,6 @@ if username not in database:
                               }
 
     print('welcome ' + username + '.')
-    print database[username]
 
 else:
     database[username]['logins'] = database[username]['logins'] + 1
@@ -210,9 +210,9 @@ def Handle_Frame_Init(frame):
             Handle_Finger(finger)
         # print(testData)
         testData = CenterData(testData)
-        time.sleep(0.02)
+        time.sleep(0.01)
         predictedClass = int(clf.Predict(testData))
-        time.sleep(0.02)
+        time.sleep(0.01)
        # print(predictedClass)
 
 def CenterData(testData):
@@ -228,7 +228,6 @@ def CenterData(testData):
 #         meanValue = allXCoords.mean()
 #         X[:,:,s,:] = allXCoords - meanValue
 #     return X
-
 
 
 def HandleState0():
@@ -247,6 +246,7 @@ def HandleState1():
     global realCoord
     global fakeCoord
     global start
+    global prevtime
 
     wrongPosition = False
 
@@ -257,7 +257,7 @@ def HandleState1():
 
     # Hardcoded; will fix later
     # Instructions to center hand along x axis
-    if testData[0, 12] < -4:
+    if testData[0, 12] < -2:
         pygameWindow.showMoveLeftImage()
         wrongPosition = True
     elif testData[0,12] > 4:
@@ -328,18 +328,16 @@ def HandleState1():
 
     #    print 'successes' + str(database[username][digitsSucceeded[numToSign]])
 
-                # if they haven't succeeded on this given digit, add tally
-                # if tally = 10, they haven't succeeded on anything yet
-                # tell them to sign 0
-
-
         # database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
 
         #print database[username][digitsAttempted[numToSign]]
         # pickle.dump(database, open('userData/database.p', 'wb'))
+        prevtime = time.time()
 
         start = 0
         programState = 2
+
+
 
 
 def HandleState2():
@@ -348,17 +346,11 @@ def HandleState2():
     global times
     global fail #???
     global sec #???
+    global prevtime #???
 
     if len(frame.hands) == 0:
         database[username][digitsAttempted[numToSign]]= database[username].get(digitsAttempted[numToSign]) + 1
         pickle.dump(database, open('userData/database.p', 'wb'))
-
-        # for i in range(0, 10):
-        #     # times = [times, '{}: '.format(i) + '{} \n'.format(userRecord[digitsAttempted[i]])]
-        #     if numToSign == i:
-        #         database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
-        #         pickle.dump(database, open('userData/database.p', 'wb'))
-        #         print database[username][digitsAttempted[i]]
         programState = 0
 
 
@@ -374,32 +366,78 @@ def HandleState2():
 
     # pygameWindow.showTimes(timesSucceeded, constants.timesSucceededCoords)
 
-
-    print(predictedClass, points)
-
     if points == 0:
         fail = fail + 1
 
+    # should I maybe rework all of this to focus on time elapsed instead of
+    # failures elapsed?
+    nowtime = time.time() - prevtime
+
     if database[username][digitsSucceeded[numToSign]] < 1:
-        if fail < 30:
-            pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+        if (time.time() - prevtime) < 11:
+            # if nowtime < 5:
+            #     pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+            # else:
+            #     pygameWindow.showRealDigit(numToSign)
+
+            if fail < 10:
+                pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+            else:
+                pygameWindow.showRealDigit(numToSign)
         else:
-            pygameWindow.showRealDigit(numToSign)
+            pygameWindow.youFailed()
+
     elif database[username][digitsSucceeded[numToSign]] < 2:
-        if fail < 20:
-            pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
-    elif database[username][digitsSucceeded[numToSign]] < 4:
-        if fail < 10:
-            pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+        if (time.time() - prevtime) < 7:
+            if fail < 20:
+                pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+            else:
+                pygameWindow.showRealDigit(numToSign)
         else:
-            pygameWindow.showRealDigit(numToSign)
+            pygameWindow.youFailed()
+
+    else: #database[username][digitsSucceeded[numToSign]] < 3:
+        if (time.time() - prevtime) > 3:
+            pygameWindow.showFailImage()
+            pygameWindow.Reveal()
+            time.sleep(0.5)
+            pygameWindow.Prepare()
+
+            prevtime = time.time()
+            fail = 0
+            points = 0
+
+# Working with 3rd scaffold
+# everything in the first and second scaffolds applies (fake and real digit images,
+# digit images disappearing after a certain amount of time, etc.), but now
+# there's a time limit. After each success, the amount of time available to sign
+# the digit decreases. If time runs out, a failure sign flashes and the user
+# must start over.
+
+
+# Working with 2nd scaffold
+    # if database[username][digitsSucceeded[numToSign]] < 1:
+    #     if fail < 30:
+    #          pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+    #     else:
+    #         pygameWindow.showRealDigit(numToSign)
+    # elif database[username][digitsSucceeded[numToSign]] < 2:
+    #     if fail < 20:
+    #         pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+    # elif database[username][digitsSucceeded[numToSign]] < 4:
+    #     if fail < 10:
+    #         pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+    #     else:
+    #         pygameWindow.showRealDigit(numToSign)
+
+
 
 # At first, the real and fake digit appear, then the fake disappears
 # if the user takes too long to sign the real digit.
 
 # After a couple successes, the real and fake digit appear so the user
-# can still rely on the picture, but only they already have some idea of
-# how to sign the digit. Then both disappear.
+# can still rely on the picture, but only if they already have some idea of
+# how to sign the digit. Then both images disappear.
 
 # Finally, no digit appears. The user must sign it on their own.
 
@@ -417,22 +455,23 @@ def HandleState2():
     #     else:
     #         pygameWindow.showRealDigit(numToSign)
 
-
-
-    # if database[username][digitsSucceeded[numToSign]] < 2:
-    #     if fail > 30:
-    #         pygameWindow.showRealDigit(numToSign)
-    # elif database[username][digitsSucceeded[numToSign]] < 4:
-    #     if fail > 40:
-    #         pygameWindow.showRealDigit(numToSign)
-    #     pygameWindow.Prepare()
+# 1st scaffold: a real and fake digit appear. If the user fails too many
+# times, scaffolding is added in the form of displaying only the real digit.
+# As the user has completed more successful signings of this digit, this
+# scaffolding is lessened: the fake digit is displayed for longer and longer,
+# forcing the user to spend more time determining the real digit before the
+# answer is displayed to them.
+# When they have succeeded enough times, they advance to the next digit.
 
 
     # or should it be successes - attempts = 2?
 
+
+    print(predictedClass, points)
+    print(time.time() - prevtime)
+
     if predictedClass == numToSign:
         points = points + 1
-        time.sleep(0.3)
         if points == 10:
             database[username][digitsAttempted[numToSign]] = database[username].get(digitsAttempted[numToSign]) + 1
             #pickle.dump(database, open('userData/database.p', 'wb'))
@@ -446,6 +485,7 @@ def HandleState2():
 
     else:
         points = 0
+        #pygameWindow.showFailImage()
 
 def HandleState3():
     global programState
@@ -476,7 +516,7 @@ def HandleState3():
         if wrongPosition:
             programState = 1
         else:
-            if database[username][digitsSucceeded[i]] < 3:
+            if database[username][digitsSucceeded[numToSign]] < 3:
                 numToSign = numToSign
                 programState = 2
     else:

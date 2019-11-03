@@ -79,6 +79,10 @@ class PYGAME_WINDOW:
         image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Success.jpg')
         self.screen.blit(image, constants.successImageCoords)
 
+    def showFailImage(self):
+        image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Fail.jpg')
+        self.screen.blit(image, constants.successImageCoords)
+
     def showNumToSign(self, num):
 
         # For showing each number indvidiually
@@ -118,6 +122,19 @@ class PYGAME_WINDOW:
         times = self.font.render(times, True, constants.black)
         # times = times.get_rect()
         self.screen.blit(times, coords)
+
+    def youFailed(self, prevtime):
+        print (time.time() - prevtime)
+        self.showFailImage()
+        self.Reveal()
+        time.sleep(0.5)
+        self.Prepare()
+        prevtime = time.time()
+        fail = 0
+        points = 0
+
+        return prevtime, fail, points
+
 
 
 
