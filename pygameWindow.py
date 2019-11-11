@@ -16,6 +16,7 @@ class PYGAME_WINDOW:
         self.controller = Leap.Controller()
         self.frame = self.controller.frame()
         self.font = pygame.font.Font('freesansbold.ttf',32)
+        self.eqnfont = pygame.font.Font('freesansbold.ttf', 80)
 
     def Prepare(self):
         pygame.event.get()
@@ -77,6 +78,7 @@ class PYGAME_WINDOW:
 
     def showSuccessImage(self):
         image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Success.jpg')
+        # image = pygame.transform.scale(image, (150,150))
         self.screen.blit(image, constants.successImageCoords)
 
     def showFailImage(self):
@@ -129,76 +131,159 @@ class PYGAME_WINDOW:
         self.Reveal()
         time.sleep(0.5)
         self.Prepare()
-        prevtime = time.time()
         fail = 0
         points = 0
 
-        return prevtime, fail, points
+        return fail, points
+
+    def showTotalAchieved(self, achievedNum, color, i):
+
+        if color == 'green':
+            achievedNum = self.font.render(str(achievedNum), True, constants.green)
+            self.screen.blit(achievedNum, constants.achievedCoords[i])
+
+        elif color == 'grey':
+            achievedNum = self.font.render(achievedNum, True, constants.grey)
+            self.screen.blit(achievedNum, constants.achievedCoords[i])
+
+        else:
+            achievedNum = self.font.render(achievedNum, True, constants.black)
+            self.screen.blit(achievedNum, constants.achievedCoords[i])
+
+    def showLeaderboard(self, rankList):
+
+
+        label = []
+        for player in rankList:
+            if player[1] != 0:
+                rank = str(rankList.index(player) + 1) + '. ' + str(player[0]) + ', ' + str(player[1])
+                label.append(self.font.render(rank, True, constants.black))
+
+        if len(label) < 6:
+            for line in range(0,len(label)):
+                self.screen.blit(label[line], (constants.boardCoords[0], constants.boardCoords[1]+(30*line)))
+        else:
+            for line in range(0,6):
+                self.screen.blit(label[line], (constants.boardCoords[0], constants.boardCoords[1] + (30 * line)))
+
+    def progressBar(self, points, fails):
+
+        star = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Star.jpg')
+        star = pygame.transform.scale(star, (30,30))
+        self.screen.blit(star, constants.starCoords)
+
+        pygame.draw.rect(self.screen,constants.grey,constants.baseBar)
+        gr = False
+
+        #should be able to make these work with elif but apparently not
+        if (points >= 3) & (points < 6):
+            # if points < 7:
+            gr = True
+            pygame.draw.rect(self.screen, constants.green, constants.greenInc[0])
+
+
+        if (points >= 6) & (points < 8):
+            #if points < 8:
+            gr = True
+            for i in range(0,2):
+                pygame.draw.rect(self.screen, constants.green, constants.greenInc[i])
+
+        if points >= 8:
+            gr = True
+            for i in range (0,3):
+                pygame.draw.rect(self.screen, constants.green, constants.greenInc[i])
+
+        if (fails >= 3) & (fails < 9):
+            if gr == False:
+                pygame.draw.rect(self.screen, constants.red, constants.redInc[0])
+
+        if (fails >= 9) & (fails < 16):
+            if gr == False:
+                for i in range(0,2):
+                    pygame.draw.rect(self.screen, constants.red, constants.redInc[i])
+
+        if fails >= 16:
+            if gr == False:
+                for i in range(0,3):
+                    pygame.draw.rect(self.screen, constants.red, constants.redInc[i])
 
 
 
 
+# SO I WAS TODAY YEARS OLD WHEN I LEARNED I CAN UPDATE JUST ONE PORTION OF THE SCREEN
+# WHY WAS I NEVER TOLD THIS
+# I'll incorporate this at some point but I don't think I'll have time for this deliverable
+
+    def showModes(self):
+        mathBox = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\mathBox.jpg')
+        mathBox = pygame.transform.scale(mathBox, (100, 100))
+        self.screen.blit(mathBox, constants.mathBox)
+
+        speedBox = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\speedBox.jpg')
+        speedBox = pygame.transform.scale(speedBox, (100, 100))
+        self.screen.blit(speedBox, constants.speedBox)
+
+        practiceBox = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\practiceBox.jpg')
+        practiceBox = pygame.transform.scale(practiceBox, (100, 100))
+        self.screen.blit(practiceBox, constants.practiceBox)
+
+    def modeSelect(self, mode):
+
+        if mode == 'math':
+            pygame.draw.rect(self.screen, constants.green, constants.mathRect, 3)
+            self.Reveal()
+            time.sleep(0.5)
+            self.Prepare()
+            print 'math chosen'
+
+        elif mode == 'speed':
+            pygame.draw.rect(self.screen, constants.green, constants.speedRect, 3)
+            self.Reveal()
+            time.sleep(0.5)
+            self.Prepare()
+            print 'speedrun chosen'
+
+        elif mode == 'practice':
+            pygame.draw.rect(self.screen, constants.green, constants.practiceRect, 3)
+            self.Reveal()
+            time.sleep(0.5)
+            self.Prepare()
+            print 'practice chosen'
+
+    def timeUp(self):
+        msg = 'Time is Up!'
+        msg = self.font.render(msg, True, constants.red)
+        self.screen.blit(msg, constants.timeUpCoords)
+
+        self.Reveal()
+        time.sleep(0.5)
+        self.Prepare()
+
+        print 'time Up'
+
+    def showEqn(self, eqn, mathNum, predictedNum):
 
 
+        eqn = self.eqnfont.render(eqn, True, constants.black)
+        self.screen.blit(eqn, constants.eqnCoords)
+
+        ansColor = constants.red
+
+        if predictedNum == mathNum:
+            ansColor = constants.green
+
+        ans = str(predictedNum)
+        ans = self.eqnfont.render(ans, True, ansColor)
+        self.screen.blit(ans, constants.ansCoords)
 
 
+        # fill in line with predictedNum
+        # if predictedNum != mathNum
+        # show predictedNum in red
 
 
+        # if you do too badly, it shows you the numeral
+        #
 
+        # if you succeed, you fill in the ___ with your signed number
 
-        # pygame.draw.polygon(self.screen, constants.grey, [(600,600), (600,400), (400,400), (400,600)])
-        # pygame.draw.polygon(self.screen, constants.green, [(580,510),(580,490),(40)])
-
-
-    # def Scale(self,coord, leapMin, leapMax, winMin, winMax):  # this Min could be zero dammit
-    #     screenwidth = winMax - winMin
-    #     # scalar = 3 would normally multiply coord
-    #     coordScaled = ((((coord - (leapMax - leapMin)) * screenwidth)) / 2) / (leapMax - leapMin)
-    #     return (int(coordScaled))
-
-    # def Handle_Vector_From_Leap(self, v):
-    #     xPre = int(v[0])
-    #     yPre = int(v[2])  # why not v[1]?
-    #     xv = self.Scale(xPre, constants.xMin, constants.xMax, 0, constants.pygameWindowWidth)
-    #     yv = self.Scale(yPre, constants.yMin, constants.yMax, 0, constants.pygameWindowDepth)
-    #     return (xv, yv)
-    #
-    # def Handle_Finger(self, finger):
-    #     for b in range(0, 4):
-    #         bone = finger.bone(b)
-    #         self.Handle_Bone(bone)
-    #
-    # def Handle_Bone(self, bone):
-    #     base = bone.prev_joint
-    #     tip = bone.next_joint
-    #     self. xBase, self.yBase = self.Handle_Vector_From_Leap(base)
-    #     self.xTip, self.yTip = self.Handle_Vector_From_Leap(tip)
-    #     #self.Draw_Black_Line(xBase, yBase, xTip, yTip)
-    #     print(self.xBase, self.yBase)
-    #     print(self.xTip, self.yTip)
-    #
-    # def Handle_Frame_Init(self):  # This function works in Del01, but fails if I move it to pygameWindow
-    #     global x
-    #     global y
-    #
-    #     handList = self.frame.hands
-    #     if len(handList) > 0:  # use isempty to track values of objects in the list
-    #         handList = self.frame.hands
-    #         for hand in handList:
-    #             fingers = hand.fingers
-    #             for finger in fingers:
-    #
-    #                 # axis control (leapMin and leapMax)
-    #                 if x < constants.xMin:
-    #                     xMin = x
-    #                 if x > constants.xMax:
-    #                     xMax = x
-    #                 if y < constants.yMin:
-    #                     yMin = y
-    #                 if y > constants.yMax:
-    #                     yMax = y
-    #
-    #                 self.Handle_Finger(finger)
-
-
-    #def Handle_Frame_Update(self, frame):

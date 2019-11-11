@@ -19,14 +19,59 @@ moveForwardImageCoords = (420, -100)
 moveBackwardImageCoords = (320, -200)
 moveUpImageCoords = (310, -200)
 moveDownImageCoords = (310, -200)
-successImageCoords = (400, -70)
+successImageCoords = (430, 0)
 numImageCoords = (500, -10)
-digitImageCoords = (300, 300)
-timesAttemptedCoords = (20,20)
-coordVec = [(300,300), (-200,300)]
 
-#rectangle size of the white block that clears the others
+digitImageCoords = (450, 450)
+timesAttemptedCoords = (20,20)
+timesComparedCoords = (20,400)
+achievedCoords = [(20, 750),
+                  (50, 750),
+                  (80, 750),
+                  (110, 750),
+                  (140, 750),
+                  (170, 750),
+                  (200, 750),
+                  (230, 750),
+                  (260, 750),
+                  (290, 750),
+                  ]
+
+coordVec = [(300,300), (-200,300)]
+boardCoords = (250, 400)
+
+# where to display mode selection images
+# boxCoords = [ xmin, xmax, ymin, ymax]
+# boxRect = (left, top, width, height)
+mathBox = (111,301)
+#mathCoords = [-50, 300, 400, 300]
+mathRect = (110, 300, 105, 105)
+
+speedBox = (mathBox[0] + 250, 101)
+#speedCoords = [400, 450, 400, 300]
+speedRect = (360, 100, 105, 105)
+
+practiceBox = (speedBox[0] + 250, mathBox[1])
+#practiceCoords = [400, 450, 400, 300]
+practiceRect = (610, 300, 105, 105)
+
+timeUpCoords = (300,300)
+
+eqnCoords = (200,500)
+ansCoords = (eqnCoords[0] + 300, eqnCoords[1]-7)
+
+
+
+
+# rectangle size of the white block that clears the others
 clear = (-200, 300, 600, 300)
+
+# Progress bar increments
+starCoords = (100,420)
+greenInc = [(100,523,30,30), (100,486,30,30), (100,449,30,30)]
+redInc = [(100,567,30,30), (100,604,30,30), (100,641,30,30)]
+baseBar = (100,560,30,5)
+
 
 
 #Speed of circle movement

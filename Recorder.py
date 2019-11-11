@@ -11,6 +11,8 @@ import pickle
 import os
 import shutil
 
+import time
+
 import constants
 from pygameWindow_Del03 import PYGAME_WINDOW_Del03
 
@@ -137,7 +139,7 @@ class RECORDER:
 
 
     def Save_Gesture(self):
-        userDataDir = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\WarrenL_test4.p' #formerly ....gesture{}.p).format(self.gestureNum)
+        userDataDir = 'C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\LeapDeveloperKit_3.2.1_win\LeapDeveloperKit_3.2.1+45911_win\LeapSDK\lib\CS228\userData\Warren_test6.p' #formerly ....gesture{}.p).format(self.gestureNum)
         pickle_out = open(userDataDir, 'wb')
         pickle.dump(self.gestureData, pickle_out)
         pickle_out.close()
@@ -193,6 +195,7 @@ class RECORDER:
                 self.Handle_Finger(finger,i)
             self.previousNumberOfHands = self.currentNumberOfHands
         if self.currentNumberOfHands == 2:
+            time.sleep(0.0025)
             print('gesture' + str(self.gestureIndex) + ' stored')
             self.gestureIndex = self.gestureIndex + 1
             if self.gestureIndex == self.numberOfGestures:

@@ -18,7 +18,7 @@ class STATE_HANDLER:
         self.controller = Leap.Controller()
         self.pygameWindow= PYGAME_WINDOW()
         self.frameHandler = FRAME_HANDLER()
-        #self.testData = self.frameHandler.testData
+        # self.testData = self.frameHandler.testData
         self.frame = self.controller.frame()
         self.programState = 0
         self.wrongPosition = True
@@ -38,33 +38,34 @@ class STATE_HANDLER:
               self.frameHandler.testData[0, 13],
               self.frameHandler.testData[0, 14])
 
+        print()
+
         if len(frame.hands) == 0:
             self.programState = 0
 
-        # # Hardcoded; will fix later
-        # # Instructions to center hand along x axis
-        if self.testData[0, 12] < -4:
+        # Hardcoded; will fix later
+        # Instructions to center hand along x axis
+        if self.frameHandler.testData[0, 6] < -20.5:
             self.pygameWindow.showMoveLeftImage()
             self.wrongPosition = True
-        elif self.testData[0, 12] > 4:
+        elif self.frameHandler.testData[0, 6] > -15.5:
             self.pygameWindow.showMoveRightImage()
             self.wrongPosition = True
-        #
-        # # Instructions to center hand along y axis
-        # elif self.frameHandler.testData[0, 13] < 4:
-        #     self.pygameWindow.showMoveForwardImage()
-        #     self.wrongPosition = True
-        # elif self.frameHandler.testData[0, 13] > 15:
-        #     self.pygameWindow.showMoveBackwardImage()
-        #     self.wrongPosition = True
-        #
-        # if not wrongPosition:
-        #     self.pygameWindow.showSuccessImage()
-        #     self.pygameWindow.Reveal()
-        #     time.sleep(0.5)
-        #     self.pygameWindow.Prepare()
-        #
-        #     numToSign = random.randint(0, 9)
-        #     self.programState = 2
+
+
+        # Instructions to center hand along y axis
+        elif self.frameHandler.testData[0, 7] > 4:
+            self.pygameWindow.showMoveForwardImage()
+            self.wrongPosition = True
+        elif self.frameHandler.testData[0, 7] < -11:
+            self.pygameWindow.showMoveBackwardImage()
+            self.wrongPosition = True
+
+        if not self.wrongPosition:
+            print self.wrongPosition
+            self.pygameWindow.showSuccessImage()
+            self.pygameWindow.Reveal()
+            time.sleep(0.5)
+            self.pygameWindow.Prepare()
 
 

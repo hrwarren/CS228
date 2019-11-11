@@ -1,8 +1,153 @@
 import threading
 import time
-import calendar
+import random
 
-print time.time()
+count0 = 0
+count1 = 0
+count2 = 0
+count3 = 0
+count4 = 0
+count5 = 0
+count6 = 0
+count7 = 0
+count8 = 0
+count9 = 0
+points = 0
+
+adZ = 0
+suZ = 0
+diZ = 0
+muZ = 0
+
+def chooseMathNum():
+    global adZ
+    global suZ
+    global diZ
+    global muZ
+
+
+
+    c = random.randint(0, 9)
+    d = random.randint(0, 9)
+
+    op = random.randint(0, 3)
+
+    if op == 0:
+        mathNum = c + d
+
+        while mathNum > 9:
+            d = random.randint(0, 9)
+            mathNum = c + d
+
+        if mathNum == 0:
+            adZ = adZ + 1
+
+        # if mathNum > 9:
+        #     d = random.randint(0,9)
+        #     mathNum = c + d
+
+    elif op == 1:
+        mathNum = c - d
+        while mathNum < 0:  # if??
+            if c == 0:
+                c = random.randint(0, 9)
+            d = random.randint(0, 9)
+            mathNum = c - d
+        if mathNum == 0:
+            suZ = suZ + 1
+
+    elif op == 2:
+        d = random.randint(1, 9)/1.0
+        mathNum = c / d
+
+        intVal = False
+        while intVal == False:
+            if mathNum%2 == 0 or (mathNum+1)%2 == 0:
+                intVal = True
+                mathNum = int(mathNum)
+                d = int(d)
+            else:
+                d = random.randint(1,9)/1.0
+                mathNum = c/d
+
+        #
+        # while isinstance(mathNum, int) == False:
+        #     d = random.randint(1,9)
+        #     mathNum = c/d
+
+        # if c != 0:
+        #     while c < d:
+        #         d = random.randint(1, 9)
+        # else:
+        #     d = d
+
+        # if c < d, change d until it's smaller than c
+        # if c == 0, escape
+
+        if mathNum == 0:
+            diZ = diZ + 1
+
+    elif op == 3:
+        mathNum = c * d
+        while mathNum > 9:
+            d = random.randint(0, 9)
+            mathNum = c * d
+        if mathNum == 0:
+            muZ = muZ + 1
+
+    eqn = str(c) + ' {} '.format(opvec[op]) + str(d) + ' = ' + str(mathNum)
+
+    # print 'c', c, ';', 'd', d, ';', op
+
+    return mathNum, c, d, op, eqn
+
+opvec = ['+', '-', '/', '*']
+
+while True:
+    mathNum, c, d, op, eqn = chooseMathNum()
+
+    if mathNum == 0:
+        limit0 = random.randint(0, 10)
+        if limit0 > 2:
+            while mathNum == 0:
+                mathNum, c, d, op, eqn = chooseMathNum()
+
+    elif mathNum == 1:
+        limit1 = random.randint(0, 10)
+        if limit1 > 2:
+            while mathNum == 1:
+                mathNum, c, d, op, eqn = chooseMathNum()
+
+    print eqn
+
+
+
+
+    if mathNum == 0:
+        count0 = count0 + 1
+    if mathNum == 1:
+        count1 = count1 + 1
+    if mathNum == 2:
+        count2 = count2 + 1
+    if mathNum == 3:
+        count3 = count3 + 1
+    if mathNum == 4:
+        count4 = count4 + 1
+    if mathNum == 5:
+        count5 = count5 + 1
+    if mathNum == 6:
+        count6 = count6 + 1
+    if mathNum == 7:
+        count7 = count7 + 1
+    if mathNum == 8:
+        count8 = count8 + 1
+    if mathNum == 9:
+        count9 = count9 + 1
+
+    # print mathNum
+
+
+print 'done'
 
 # import pickle
 #

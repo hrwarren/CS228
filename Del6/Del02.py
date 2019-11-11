@@ -34,7 +34,7 @@ controller = Leap.Controller()
 frame = controller.frame()
 
 # Loading in the classifier
-clf = pickle.load(open('userData/classifier_012356789.p', 'rb'))
+clf = pickle.load(open('userData/classifier_0123456789_k100.p', 'rb'))
 
 # Creating a vector to store the 30 features from the Leap Motion data
 
