@@ -60,7 +60,6 @@ fail = 0
 
 # Init counter of how many seconds have passed since image shown
 sec = 0
-
 prevtime = time.time()
 
 # Number of times user must succeed on a number to proceed
@@ -77,6 +76,7 @@ divisor = 2
 
 # run score for the speedrun mode
 runScore = 0
+timeLeft = 10
 
 # The vector of dictionary keys:
 digitsAttempted = ['digit0attempted',
@@ -101,6 +101,7 @@ digitsSucceeded = ['digit0succeeded',
                    'digit8succeeded',
                    'digit9succeeded']
 
+
 # math state operators in string form
 opvec = ['+', '-', '/', '*']
 
@@ -109,8 +110,13 @@ times = []
 
 
 # Getting username and info
+
+
+username = pygameWindow.loginScreen()
+
 database = pickle.load(open('userData/database.p','rb'))
-username = raw_input('Please enter your name: ')
+# username = raw_input('Please enter your name: ')
+
 if username not in database:
     for i in range(0,10):
         database[username] = {'logins': 1,
@@ -143,7 +149,15 @@ if username not in database:
 
                               },
 
-                              'rank': 0
+                              'rank': 0,
+
+                              'runScore': {
+                                  'previous': 0,
+                                  'highest': 0
+
+                              },
+
+                              'mathScore': 0
 
                               }
 
@@ -396,6 +410,11 @@ def HandleState1():
         elif start == 1:
             numToSign = 9
 
+        #need to figure out how to restart this if user has achieved all 9
+        elif start == 0:
+            numToSign = random.randint(0,9)
+
+
         # choose random fake number to trick with
         fakeNum = random.randint(0, 9)
         while fakeNum == numToSign:
@@ -432,6 +451,9 @@ def HandleState2():
     global fail #???
     global sec #???
     global prevtime #???
+    global divisor #????
+
+    divisor = 2
 
     pygameWindow.showLeaderboard(res)
     pygameWindow.progressBar(points, fail)
@@ -443,7 +465,12 @@ def HandleState2():
         prevState = 2
         programState = 0
 
-
+    drawnIndex = Handle_Vector_From_Leap(testData[0, 9:12], divisor)
+    print(drawnIndex)
+    if (drawnIndex[0] > 175) & (drawnIndex[0] < 182):
+        if (drawnIndex[1] > 250) & (drawnIndex[1] < 270):
+            # figure out how to make it so they have to stay here for 2 seconds
+            programState = 4
 
     # Just shows the number of times that digit has been attempted
     timesAttempted = str(database[username]['digitsAttempted'][digitsAttempted[numToSign]])
@@ -452,6 +479,7 @@ def HandleState2():
 
    # print times
 
+    pygameWindow.showBackBtn()
     pygameWindow.showNumToSign(numToSign)
     pygameWindow.showTimes(timesAttempted, constants.timesAttemptedCoords)
 
@@ -467,6 +495,8 @@ def HandleState2():
             if database[username]['digitsSucceeded'][digitsSucceeded[i]] >= thresh:
                 color = 'green'
 
+        pygameWindow.showTotalAchieved(achievedNum,color,i)
+
     # pygameWindow.showTimes(timesSucceeded, constants.timesSucceededCoords)
 
     # if points == 0:
@@ -481,12 +511,12 @@ def HandleState2():
             # if nowtime < 5:
             #     pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
             # else:
-            #     pygameWindow.showRealDigit(numToSign)
-
-            if fail < 10:
-                pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
-            else:
                 pygameWindow.showRealDigit(numToSign)
+
+            # if fail < 10:
+            #     pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
+            # else:
+            #     pygameWindow.showRealDigit(numToSign)
         else:
             pygameWindow.youFailed()
 
@@ -649,6 +679,8 @@ def HandleState3():
                         numToSign = 8
                     elif bleh == 1:
                         numToSign = 9
+                    elif bleh == 0:
+                        numToSign = random.randint(0,9)
 
                     if database[username]['rank'] >= 40:
                         programState = 4 # the mode selection state
@@ -684,6 +716,7 @@ def HandleState4(): # select the game mode
     # if I enable a back button in the other modes, it'll lead here
     global prevtime
     global runtime
+    global counterTime
     global divisor
     global programState
     global prevState
@@ -692,43 +725,21 @@ def HandleState4(): # select the game mode
     global runScore
     global fail
     global points
+    global missed
     divisor = 1
 
     print(testData[0,9:12])
 
-    pygameWindow.showModes()
     drawnIndex = Handle_Vector_From_Leap(testData[0,9:12],divisor)
     print(drawnIndex[0:3])
     time.sleep(0.02)
 
     print 'ind' + str(drawnIndex[0:3]) + ', '
 
-    if (drawnIndex[0] > 350) & (drawnIndex[0] < 360):
-        if (drawnIndex[1] > 300) & (drawnIndex[1] < 390):
-            # figure out how to make it so they have to stay here for 2 seconds
-            mode = 'math'
-            pygameWindow.modeSelect(mode)
-            mathNum, c, d, op = chooseMathNum()
-            prevtime = time.time()
-            divisor = 2
-            programState = 5
 
-    # originally 365 and 375
-    if (drawnIndex[0] > 375) & (drawnIndex[0] < 385):
-        if (drawnIndex[1] > 90) & (drawnIndex[1] < 200):
-            mode = 'speed'
-            pygameWindow.modeSelect(mode)
-            prevtime = time.time()
-            runtime = time.time()
-            randNum = random.randint(0, 9)
-            runScore = 0
-            points = 0
-            fail = 0
-            divisor = 2
-            programState = 6
 
-    if (drawnIndex[0] > 425) & (drawnIndex[0] < 435):
-        if (drawnIndex[1] > 300) & (drawnIndex[1] < 390):
+    if (drawnIndex[0] > 400) & (drawnIndex[0] < 420):   #originally 425 and 435
+        if (drawnIndex[1] > 290) & (drawnIndex[1] < 420):   #originally 300 and 390
             mode = 'practice'
             pygameWindow.modeSelect(mode)
             prevtime = time.time()
@@ -736,17 +747,58 @@ def HandleState4(): # select the game mode
             prevState = 4
             programState = 2
 
+    if database[username].get('rank') < 4:
+        ready = False
+    else:
+        ready = True
+        if (drawnIndex[0] > 350) & (drawnIndex[0] < 360):
+            if (drawnIndex[1] > 300) & (drawnIndex[1] < 390):
+                # figure out how to make it so they have to stay here for 2 seconds
+                mode = 'math'
+                pygameWindow.modeSelect(mode)
+                mathNum, c, d, op = chooseMathNum()
+                prevtime = time.time()
+                divisor = 2
+                programState = 5
+
+        # originally 365 and 375
+        if (drawnIndex[0] > 375) & (drawnIndex[0] < 385):
+            if (drawnIndex[1] > 90) & (drawnIndex[1] < 200):
+                mode = 'speed'
+                pygameWindow.modeSelect(mode)
+                prevtime = time.time()
+                runtime = time.time()
+                counterTime = time.time()
+                randNum = random.randint(0, 9)
+                runScore = 0
+                points = 0
+                fail = 0
+                divisor = 2
+                missed = 0
+                programState = 6
+
+    pygameWindow.showModes(ready)
+
 def HandleState5(): # math mode
     global mathNum, c, d, op
     global programState
     global prevState
     global divisor
     global points
-    divisor = 1.5
+    divisor = 2
+
+    pygameWindow.showBackBtn()
 
     if len(frame.hands) == 0:
         prevState = 5
         programState = 0
+
+    drawnIndex = Handle_Vector_From_Leap(testData[0, 9:12], divisor)
+    print(drawnIndex)
+    if (drawnIndex[0] > 175) & (drawnIndex[0] < 182):
+        if (drawnIndex[1] > 250) & (drawnIndex[1] < 270):
+            # figure out how to make it so they have to stay here for 2 seconds
+            programState = 4
 
     eqn = str(c) + ' {} '.format(opvec[op]) + str(d) + ' = __'
 
@@ -763,7 +815,6 @@ def HandleState5(): # math mode
             points = 0
             prevState = 5
             programState = 3
-
 
 
 
@@ -795,24 +846,36 @@ def HandleState6(): # speed mode
     global divisor
     global runtime
     global fail
+    global timeLeft
+    global counterTime
+    global missed
+
     divisor = 2
 
-    pygameWindow.progressBar(points, fail)
+   # pygameWindow.progressBar(points, fail)
+    pygameWindow.showBackBtn()
 
-    if (time.time() - prevtime) < 10:
-        if (time.time() - runtime) < 5:
+    drawnIndex = Handle_Vector_From_Leap(testData[0, 9:12], divisor)
+    print(drawnIndex)
+    if (drawnIndex[0] > 175) & (drawnIndex[0] < 182):
+        if (drawnIndex[1] > 250) & (drawnIndex[1] < 270):
+            # figure out how to make it so they have to stay here for 2 seconds
+            programState = 4
+
+
+    if (time.time() - prevtime) < 11:   #if current time - the time this started is less than 10 seconds
+        if (time.time() - runtime) < 5:     #if current time - how long current number has been shown is less than 5 seconds
 
             pygameWindow.showRealDigit(randNum)
             pygameWindow.showNumToSign(randNum)
             time.sleep(0.05)
-            debugTime = time.time() - runtime
-            print debugTime
+
             print(predictedClass, randNum)
             if predictedClass == randNum:
                 time.sleep(0.05)
                 fail = 0
                 points = points + 1
-                if points == 3:
+                if points == 2:
                     runScore = runScore + 1
                     randNum = random.randint(0,9)
                     points = 0
@@ -821,21 +884,54 @@ def HandleState6(): # speed mode
             else:
                 points = 0
                 fail = fail + 1
+
         else:
             randNum = random.randint(0,9)
+            missed = missed + 1
             points = 0
             runtime = time.time()
 
-        print(int(time.time()-prevtime) - 10)
+
+        if time.time() - counterTime > 1:
+            counterTime = time.time()
+            timeLeft = timeLeft - 1
+
+            print "%s seconds left" % timeLeft
+            if timeLeft <= 0:
+                timeLeft = 0
+        pygameWindow.showCountDown(timeLeft, runScore)
 
     else:
         print runScore
-        pygameWindow.timeUp()
-        prevState = 6
-        programState = 4
 
-def HandleState6b():
-    pass
+       # pygameWindow.timeUp(runScore)
+        if runScore > database[username]['runScore']['highest']:
+            database[username]['runScore']['highest'] = runScore
+        database[username]['runScore']['previous'] = runScore
+        print 'highest: ', runScore
+
+        timeLeft = 10
+        prevState = 6
+        programState = 7
+        # programState = 4
+
+def HandleState7():
+    global runScore
+    global missed
+    global programState
+
+    pygameWindow.timeUp(runScore,missed)
+    pygameWindow.showBackBtn()
+
+    drawnIndex = Handle_Vector_From_Leap(testData[0, 9:12], divisor)
+    print(drawnIndex)
+    if (drawnIndex[0] > 175) & (drawnIndex[0] < 182):
+        if (drawnIndex[1] > 250) & (drawnIndex[1] < 270):
+            # figure out how to make it so they have to stay here for 2 seconds
+            programState = 4
+
+
+
 
 
             # if nowtime < 5:
@@ -892,6 +988,8 @@ while runStatus:
         HandleState5()
     elif programState == 6:
         HandleState6()
+    elif programState == 7:
+        HandleState7()
 
     pygameWindow.Reveal()  # show drawn material to the user
 

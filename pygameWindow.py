@@ -6,6 +6,9 @@ import random
 import numpy as np
 sys.path.insert(0, '..')
 sys.path.insert(1, '../x86')
+
+import pygame_textInput
+
 import Leap #still not able to import Leap for some reason???
 
 class PYGAME_WINDOW:
@@ -15,8 +18,10 @@ class PYGAME_WINDOW:
         self.screen = pygame.display.set_mode((constants.pygameWindowWidth,constants.pygameWindowDepth)) #note: 300,100 represents screen height and width
         self.controller = Leap.Controller()
         self.frame = self.controller.frame()
+        self.clock = pygame.time.Clock()
         self.font = pygame.font.Font('freesansbold.ttf',32)
         self.eqnfont = pygame.font.Font('freesansbold.ttf', 80)
+        self.textInput = pygame_textInput.TextInput()
 
     def Prepare(self):
         pygame.event.get()
@@ -24,18 +29,6 @@ class PYGAME_WINDOW:
     
     def Reveal(self):  
         pygame.display.update()
-    
-    def Draw_Black_Circle(self, x, y):
-        # axis control (leapMin and leapMax)
-        if x < 0:
-            x = 0
-        if x > constants.pygameWindowWidth:
-            x = constants.pygameWindowWidth
-        if y < 0:
-            y = 0
-        if y > constants.pygameWindowDepth:
-            y = constants.pygameWindowDepth
-        pygame.draw.circle(self.screen, constants.black, [x,y], 20) #args are (screen, color, coordinates, size)
 
     def Draw_Black_Line(self, xBase, yBase, xTip, yTip, b):
         pygame.draw.line(self.screen, constants.black, [xBase, yBase], [xTip, yTip], b)
@@ -47,6 +40,9 @@ class PYGAME_WINDOW:
         ratio = (((scalar * coord) + ((leapMax - leapMin) / 2)) / (leapMax - leapMin))
         print(ratio)
         return int((ratio) * (screenwidth))
+
+
+    # Intro image functions
 
     def showInitialImage(self):
         image = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\HandOverLeapVisual_cropped.jpg')
@@ -114,8 +110,8 @@ class PYGAME_WINDOW:
 
         #self.screen.blit('?', constants.qCoords)
 
-    def clearDigits(self):
-        pygame.draw.rect(self.screen, constants.white, constants.clear)
+    def clear(self, coords):
+        pygame.draw.rect(self.screen, constants.blue, coords)
 
     # def showOutline(self):
     #     self.pygame.draw.rect(self.screen, constants.red, )
@@ -214,18 +210,26 @@ class PYGAME_WINDOW:
 # WHY WAS I NEVER TOLD THIS
 # I'll incorporate this at some point but I don't think I'll have time for this deliverable
 
-    def showModes(self):
-        mathBox = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\mathBox.jpg')
-        mathBox = pygame.transform.scale(mathBox, (100, 100))
-        self.screen.blit(mathBox, constants.mathBox)
-
-        speedBox = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\speedBox.jpg')
-        speedBox = pygame.transform.scale(speedBox, (100, 100))
-        self.screen.blit(speedBox, constants.speedBox)
-
+    def showModes(self, ready):
         practiceBox = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\practiceBox.jpg')
         practiceBox = pygame.transform.scale(practiceBox, (100, 100))
         self.screen.blit(practiceBox, constants.practiceBox)
+
+        if ready:
+
+            mathBox = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\mathBox.jpg')
+            mathBox = pygame.transform.scale(mathBox, (100, 100))
+            self.screen.blit(mathBox, constants.mathBox)
+
+            speedBox = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\speedBox.jpg')
+            speedBox = pygame.transform.scale(speedBox, (100, 100))
+            self.screen.blit(speedBox, constants.speedBox)
+
+        else:
+
+            pygame.draw.rect(self.screen, constants.grey, constants.mathRect)
+            pygame.draw.rect(self.screen, constants.grey, constants.speedRect)
+
 
     def modeSelect(self, mode):
 
@@ -250,19 +254,34 @@ class PYGAME_WINDOW:
             self.Prepare()
             print 'practice chosen'
 
-    def timeUp(self):
+    def timeUp(self, runScore, missed):
         msg = 'Time is Up!'
         msg = self.font.render(msg, True, constants.red)
         self.screen.blit(msg, constants.timeUpCoords)
 
-        self.Reveal()
-        time.sleep(0.5)
-        self.Prepare()
+        check = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Success.jpg')
+        check = pygame.transform.scale(check, (50,50))
+        self.screen.blit(check, constants.checkCoords)
+
+        runScore = str(runScore)
+        runScore = self.font.render(runScore, True, constants.black)
+        self.screen.blit(runScore, constants.scoreCoords)
+
+        redX = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Fail.jpg')
+        redX = pygame.transform.scale(redX, (50,50))
+        self.screen.blit(redX, constants.redXCoords)
+
+        missed = str(missed)
+        missed = self.font.render(missed, True, constants.black)
+        self.screen.blit(missed, constants.missedCoords)
+
+        # self.Reveal()
+        # time.sleep(0.5)
+        # self.Prepare()
 
         print 'time Up'
 
     def showEqn(self, eqn, mathNum, predictedNum):
-
 
         eqn = self.eqnfont.render(eqn, True, constants.black)
         self.screen.blit(eqn, constants.eqnCoords)
@@ -275,6 +294,86 @@ class PYGAME_WINDOW:
         ans = str(predictedNum)
         ans = self.eqnfont.render(ans, True, ansColor)
         self.screen.blit(ans, constants.ansCoords)
+
+    def showBackBtn(self):
+
+        backBtn = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\prevBtn.jpg')
+        backBtn = pygame.transform.scale(backBtn, (60,30))
+        self.screen.blit(backBtn, constants.backBtnCoords)
+
+    def showCountDown(self, timeLeft, runScore):
+
+        runScore = str(runScore)
+        runScore = self.font.render(runScore, True, constants.black)
+        self.screen.blit(runScore, constants.scoreCoords)
+
+        timeColor = constants.black
+        if timeLeft == 0:
+            timeColor = constants.red
+        timeLeft = str(timeLeft)
+        timeLeft = self.eqnfont.render(timeLeft, True, timeColor)
+        self.screen.blit(timeLeft, constants.timerCoords)
+
+    def loginScreen(self):
+        lockedImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\locked.jpg')
+        lockedImage = pygame.transform.scale(lockedImage, constants.lockSize)
+
+        unlockedImage = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\unlocked.jpg')
+        unlockedImage = pygame.transform.scale(unlockedImage, constants.lockSize)
+
+        text = ''
+        input_box = pygame.Rect(300, 300, 140, 32)
+        color = constants.black
+        done = False
+        unlocked = False
+
+        while not done:
+
+            text = self.textInput.get_text()
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        print text
+                        unlocked = True
+                        done = True
+
+                    if event.key == pygame.K_0:
+                        exit()
+
+            self.textInput.update(events)
+
+            self.screen.fill((255, 255, 255))
+
+            # Render the current text.
+            txt_surface = self.textInput.get_surface()
+
+            # Resize the box if the text is too long.
+            width = max(200, txt_surface.get_width() + 10)
+            input_box.w = width
+
+            # Blit the text.
+            self.screen.blit(txt_surface, (input_box.x + 5, input_box.y + 5))
+
+            # Blit the input_box rect.
+            pygame.draw.rect(self.screen, color, input_box, 2)
+
+            # Blit the lock/unlock image
+            if unlocked:
+                pixels = pygame.PixelArray(unlockedImage)
+                pixels.replace(constants.black, constants.green)
+                del pixels
+                self.screen.blit(unlockedImage, constants.lockCoords)
+
+            else:
+                self.screen.blit(lockedImage, constants.lockCoords)
+
+            pygame.display.flip()
+            self.clock.tick(30)
+        time.sleep(3)
+
+
+        return text
 
 
         # fill in line with predictedNum

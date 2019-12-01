@@ -13,24 +13,25 @@ knn = knn.KNN()
 
 
 
-def ReshapeData(set0,set1,set2,set3,set4,set5,set6,set7,set8,set9,set10,set11,set12): #set13,set14,set15): #,set3,set4,set5,set6,set7,set8,set9):
-    X = np.zeros((13000, 5*2*3), dtype = 'f') # normally 10000
-    y = np.zeros((13000, 1), dtype='f')
+def ReshapeData(set0,set1,set2,set3,set4,set5,set6,set7,set8,set9,set10,set11,set12,set13, set14): #,set15): #,set3,set4,set5,set6,set7,set8,set9):
+    X = np.zeros((15000, 5*2*3), dtype = 'f') # normally 10000
+    y = np.zeros((15000, 1), dtype='f')
     for row in range(0,1000):
         y[row, 0] = 0
         y[(row + 1000), 0] = 1
-        y[(row + 2000), 0] = 2
+        y[(row + 2000), 0] = 1
         y[(row + 3000), 0] = 2
-        y[(row + 4000), 0] = 3
-        y[(row + 5000), 0] = 4
-        y[(row + 6000), 0] = 5
-        y[(row + 7000), 0] = 5
-        y[(row + 8000), 0] = 6
-        y[(row + 9000), 0] = 6
-        y[(row + 10000), 0] = 7
-        y[(row + 11000), 0] = 8
-        y[(row + 12000), 0] = 9
-        # y[(row + 13000), 0] = 8
+        y[(row + 4000), 0] = 2
+        y[(row + 5000), 0] = 3
+        y[(row + 6000), 0] = 3
+        y[(row + 7000), 0] = 4
+        y[(row + 8000), 0] = 5
+        y[(row + 9000), 0] = 5
+        y[(row + 10000), 0] = 6
+        y[(row + 11000), 0] = 6
+        y[(row + 12000), 0] = 7
+        y[(row + 13000), 0] = 8
+        y[(row + 14000), 0] = 9
         # y[(row + 14000), 0] = 9
         # y[(row + 15000), 0] = 9
 
@@ -57,16 +58,14 @@ def ReshapeData(set0,set1,set2,set3,set4,set5,set6,set7,set8,set9,set10,set11,se
                     X[row + 10000, col] = set10[finger, bone, coord_ind, row]
                     X[row + 11000, col] = set11[finger, bone, coord_ind, row]
                     X[row + 12000, col] = set12[finger, bone, coord_ind, row]
-                    # X[row + 13000, col] = set13[finger, bone, coord_ind, row]
-                    # X[row + 14000, col] = set14[finger, bone, coord_ind, row]
+                    X[row + 13000, col] = set13[finger, bone, coord_ind, row]
+                    X[row + 14000, col] = set14[finger, bone, coord_ind, row]
                     # X[row + 15000, col] = set14[finger, bone, coord_ind, row]
 
                     col = col + 1
 
                     # for each X[row + (1000*d), col] =
     return X, y
-
-# originally shaped 5,4,6,2000
 
 def ReduceData(X):
     X = np.delete(X,1,1)
@@ -116,7 +115,7 @@ def loadFiles(trainFile, testFile):
 train_0, test_0 = loadFiles('userData\Warren_train0.p', 'userData\Warren_test0.p')
 
 
-# train_1, test_1 = loadFiles('userData\Grasso_train1.p', 'userData\Grasso_test1.p')
+train_1b, test_1b = loadFiles('userData\Grasso_train1.p', 'userData\Grasso_test1.p')
 # train_1b, test_1b = loadFiles('userData\Lin_train1.p', 'userData\Lin_test1.p')
 train_1, test_1 = loadFiles('userData\Warren_train1.p', 'userData\Warren_test1.p')
 
@@ -126,7 +125,7 @@ train_2, test_2 = loadFiles('userData\Warren_train2.p', 'userData\Warren_test2.p
 
 
 # train_3, test_3 = loadFiles('userData\Trinity_train3.p', 'userData\Trinity_test3.p')
-# train_3b, test_3b = loadFiles('userData\Ward_train3.p', 'userData\Ward_test3.p')
+train_3b, test_3b = loadFiles('userData\Ward_train3.p', 'userData\Ward_test3.p')
 train_3, test_3 = loadFiles('userData\Warren_train3.p', 'userData\Warren_test3.p')
 
 
@@ -171,9 +170,9 @@ train_9, test_9 = loadFiles('userData\Warren_train9.p', 'userData\Warren_test9.p
 
 # these are currently missing all trainX_c
 trainX, trainy = ReshapeData(train_0,
-                             train_1,
+                             train_1, train_1b,
                              train_2, train_2b,
-                             train_3, #train_3b,
+                             train_3, train_3b,
                              train_4,
                              train_5, train_5b,
                              train_6, train_6b,
@@ -181,9 +180,9 @@ trainX, trainy = ReshapeData(train_0,
                              train_8, #train_8b,
                              train_9) #train_9b) #, train_7b) #, train2_a, train3_a, train4_a, train5_a, train6_a, train7_a, train8_a, train9_a)
 testX, testy = ReshapeData(test_0,
-                           test_1,
+                           test_1, test_1b,
                            test_2, test_2b,
-                           test_3, #test_3b,
+                           test_3, test_3b,
                            test_4,
                            test_5, test_5b,
                            test_6, test_6b,
@@ -218,7 +217,7 @@ count8 = 0
 count9 = 0
 
 
-for row in range(0,13000): # normally 0:20000
+for row in range(0,15000): # normally 0:20000
     itemClass = int(testy[row])
     prediction = int(knn.Predict(testX[row,:]))
     actualClass = testy[row]

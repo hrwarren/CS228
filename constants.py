@@ -10,6 +10,10 @@ green = (0,255,0)
 red = (255,0,0)
 grey = (192,192,192)
 
+#Login screen locations
+lockCoords = (300, 100)
+lockSize = (100, 110)
+
 #Where to display the helpful images
 startingImageCoords = (500, -100)
 blankCoords = (500, 10, 400, 241)
@@ -37,6 +41,12 @@ achievedCoords = [(20, 750),
                   (290, 750),
                   ]
 
+# Progress bar increments
+starCoords = (100,420)
+greenInc = [(100,523,30,30), (100,486,30,30), (100,449,30,30)]
+redInc = [(100,567,30,30), (100,604,30,30), (100,641,30,30)]
+baseBar = (100,560,30,5)
+
 coordVec = [(300,300), (-200,300)]
 boardCoords = (250, 400)
 
@@ -50,27 +60,32 @@ mathRect = (110, 300, 105, 105)
 speedBox = (mathBox[0] + 250, 101)
 #speedCoords = [400, 450, 400, 300]
 speedRect = (360, 100, 105, 105)
+timerCoords = (100, 500)
+timeUpCoords = (300,300)
+
+scoreCoords = (timeUpCoords[0]+10, timeUpCoords[1]+100)
+checkCoords = (scoreCoords[0]-120, scoreCoords[1])
+
+missedCoords = (scoreCoords[0], scoreCoords[1]+150)
+redXCoords = (checkCoords[0], missedCoords[1])
+
 
 practiceBox = (speedBox[0] + 250, mathBox[1])
 #practiceCoords = [400, 450, 400, 300]
 practiceRect = (610, 300, 105, 105)
 
-timeUpCoords = (300,300)
+
 
 eqnCoords = (200,500)
 ansCoords = (eqnCoords[0] + 300, eqnCoords[1]-7)
+
+backBtnCoords = (60, 250)
 
 
 
 
 # rectangle size of the white block that clears the others
 clear = (-200, 300, 600, 300)
-
-# Progress bar increments
-starCoords = (100,420)
-greenInc = [(100,523,30,30), (100,486,30,30), (100,449,30,30)]
-redInc = [(100,567,30,30), (100,604,30,30), (100,641,30,30)]
-baseBar = (100,560,30,5)
 
 
 
