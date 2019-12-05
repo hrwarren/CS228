@@ -7,14 +7,78 @@ def Reset():
     pickle.dump(dictionary, open('userData/database.p', 'wb'))
 
 database = pickle.load(open('userData/database.p','rb'))
+# #
 #
-
-#     username : {
-#         logins : 0}
-#     }
-# }
-
-totalSucceeded = 0
+# #     username : {
+# #         logins : 0}
+# #     }
+# # }
+#
+# totalSucceeded = 0
+#
+# digitsAttempted = ['digit0attempted',
+#                    'digit1attempted',
+#                    'digit2attempted',
+#                    'digit3attempted',
+#                    'digit4attempted',
+#                    'digit5attempted',
+#                    'digit6attempted',
+#                    'digit7attempted',
+#                    'digit8attempted',
+#                    'digit9attempted']
+#
+# digitsSucceeded = ['digit0succeeded',
+#                    'digit1succeeded',
+#                    'digit2succeeded',
+#                    'digit3succeeded',
+#                    'digit4succeeded',
+#                    'digit5succeeded',
+#                    'digit6succeeded',
+#                    'digit7succeeded',
+#                    'digit8succeeded',
+#                    'digit9succeeded']
+#
+# database['rose'] = {'logins': 1,
+#
+#
+#                               'digitsAttempted': {
+#                                   digitsAttempted[0]: 0,
+#                                   digitsAttempted[1]: 0,
+#                                   digitsAttempted[2]: 0,
+#                                   digitsAttempted[3]: 0,
+#                                   digitsAttempted[4]: 0,
+#                                   digitsAttempted[5]: 0,
+#                                   digitsAttempted[6]: 0,
+#                                   digitsAttempted[7]: 0,
+#                                   digitsAttempted[8]: 0,
+#                                   digitsAttempted[9]: 0,
+#                               },
+#
+#                               'digitsSucceeded': {
+#                                   digitsSucceeded[0]: 3,
+#                                   digitsSucceeded[1]: 3,
+#                                   digitsSucceeded[2]: 3,
+#                                   digitsSucceeded[3]: 3,
+#                                   digitsSucceeded[4]: 3,
+#                                   digitsSucceeded[5]: 3,
+#                                   digitsSucceeded[6]: 3,
+#                                   digitsSucceeded[7]: 0,
+#                                   digitsSucceeded[8]: 0,
+#                                   digitsSucceeded[9]: 0,
+#
+#                               },
+#
+#                               'rank': 0,
+#
+#                               'runScore': {
+#                                   'previous': 0,
+#                                   'highest': 0
+#
+#                               },
+#
+#                               'mathScore': 0
+#
+#                               }
 
 # dictionary = {'logins': 1,
 #               'Attempted': {
@@ -60,11 +124,11 @@ totalSucceeded = 0
 #
 
 
-#############
+# #############
 Reset()
-#############
+# #############
 print database
-
+pickle.dump(database,open('userData/database.p', 'wb'))
 #
 # blah = ['0', '2', '3']
 #
@@ -83,4 +147,3 @@ print database
 #
 # print database[username].get('logins')
 #
-# pickle.dump(database,open('userData/database.p', 'wb'))

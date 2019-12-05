@@ -63,11 +63,14 @@ sec = 0
 prevtime = time.time()
 
 # Number of times user must succeed on a number to proceed
-thresh = 4
+thresh = 3
 achieved = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-# Initialize the dictionary for storing the leaderboard
+# Initialize the dictionary for storing the practice mode leaderboard
 leaderboard = {}
+
+# Initialize the dictionary for storing the speed mode leaderboard
+speederboard = {}
 
 # divisor for scaling drawing window
 divisor = 2
@@ -154,10 +157,15 @@ if username not in database:
                               'runScore': {
                                   'previous': 0,
                                   'highest': 0
-
                               },
 
-                              'mathScore': 0
+                              'mathScore': {
+                                  'total': 0,
+                                  '+': 0,
+                                  '-': 0,
+                                  '/': 0,
+                                  '*': 0
+                              }
 
                               }
 
@@ -277,40 +285,44 @@ def chooseMathNum():
 
     op = random.randint(0, 3)
 
-    if op == 0:
-        mathNum = c + d
+    if True is True:
 
-        while mathNum > 9:
-            d = random.randint(0, 9)
+        if op == 0:
             mathNum = c + d
 
-    elif op == 1:
-        mathNum = c - d
-        while mathNum < 0:  # if??
-            if c == 0:
-                c = random.randint(0, 9)
-            d = random.randint(0, 9)
+            while mathNum > 9:
+                d = random.randint(0, 9)
+                mathNum = c + d
+
+        elif op == 1:
             mathNum = c - d
+            while mathNum < 0:  # if??
+                if c == 0:
+                    c = random.randint(0, 9)
+                d = random.randint(0, 9)
+                mathNum = c - d
 
-    elif op == 2:
-        d = random.randint(1, 9)/1.0
-        mathNum = c / d
+        elif op == 2:
+            d = random.randint(1, 9)/1.0
+            mathNum = c / d
 
-        intVal = False
-        while intVal == False:
-            if mathNum%2 == 0 or (mathNum+1)%2 == 0:
-                intVal = True
-                mathNum = int(mathNum)
-                d = int(d)
-            else:
-                d = random.randint(1,9)/1.0
-                mathNum = c/d
+            intVal = False
+            while intVal == False:
+                if mathNum%2 == 0 or (mathNum+1)%2 == 0:
+                    intVal = True
+                    mathNum = int(mathNum)
+                    d = int(d)
+                else:
+                    d = random.randint(1,9)/1.0
+                    mathNum = c/d
 
-    elif op == 3:
-        mathNum = c * d
-        while mathNum > 9:
-            d = random.randint(0, 9)
+        elif op == 3:
             mathNum = c * d
+            while mathNum > 9:
+                d = random.randint(0, 9)
+                mathNum = c * d
+
+
 
     return mathNum, c, d, op
 
@@ -323,122 +335,104 @@ def HandleState0():
 
     if len(frame.hands) > 0: #I want to make this a boolean: handOverDevice == True
         prevState = 0
-        programState = 1
-
-def HandleState1():
-    global programState
-    global prevState
-    global wrongPosition
-    global numToSign
-    global fakeNum
-    global realCoord
-    global fakeCoord
-    global start
-    global prevtime
-
-    wrongPosition = False
-
-    print 'mid', (testData[0,12], testData[0,13], testData[0,14])
-    # centeredX: 3-ish, centeredY: 7-ish
-    print 'ring', (testData[0,18], testData[0,19], testData[0,20])
-    # centeredX: 24-ish, centeredY: 8-ish
-    print 'ind', (testData[0, 6], testData[0, 7], testData[0, 8])
-    # centeredX: -17-ish, centeredY: 2-ish
-    #time.sleep(0.6)
-
-    if len(frame.hands) == 0:
-        prevState = 1
-        programState = 0
-
-# INDEX FINGER CENTERING
-#   Instructions to center hand along x axis
-    if testData[0, 6] < -20.5: # originally <-2
-        pygameWindow.showMoveLeftImage()
-        wrongPosition = True
-    elif testData[0, 6] > -15.5:
-        pygameWindow.showMoveRightImage()
-        wrongPosition = True
-
-#    Instructions to center hand along y axis
-    elif testData[0, 7] > 4:
-        pygameWindow.showMoveForwardImage()
-        wrongPosition = True
-    elif testData[0, 7] < -11:
-        pygameWindow.showMoveBackwardImage()
-        wrongPosition = True
-
-    if not wrongPosition:
-        print wrongPosition
-        # pygameWindow.showSuccessImage()
-        # pygameWindow.Reveal()
-        # time.sleep(0.5)
-        # pygameWindow.Prepare()
-
-
-
-        for i in range(0, 10):
-            # if userRecord[digitsSucceeded[i]] == 0:
-
-            # the program is seeing how many times the user has successfully signed.
-            # so, consulting the number of succeeded repetitions.
-            # if they've done it at least 3 times (in a row?), the program progresses to next digit.
-
-            # if the user has not successfully signed digit i at least 3 times:
-
-            if database[username]['digitsSucceeded'][digitsSucceeded[i]] < thresh:
-                start = start + 1
-
-        # choose numToSign based on what numbers have been successfully signed
-        if start == 10:
-            numToSign = 0
-        elif start == 9:
-            numToSign = 1
-        elif start == 8:
-            numToSign = 2
-        elif start == 7:
-            numToSign = 3
-        elif start == 6:
-            numToSign = 4
-        elif start == 5:
-            numToSign = 5
-        elif start == 4:
-            numToSign = 6
-        elif start == 3:
-            numToSign = 7
-        elif start == 2:
-            numToSign = 8
-        elif start == 1:
-            numToSign = 9
-
-        #need to figure out how to restart this if user has achieved all 9
-        elif start == 0:
-            numToSign = random.randint(0,9)
-
-
-        # choose random fake number to trick with
-        fakeNum = random.randint(0, 9)
-        while fakeNum == numToSign:
-            fakeNum = random.randint(0,9)
-
-        # choose coordinates for the real digit image
-        # fake coordinates decided by process of elimination
-        realCoord = random.randint(0,1)
-        fakeCoord = random.randint(0,1)
-        while fakeCoord == realCoord:
-            fakeCoord = random.randint(0,1)
-
-
-    #    print 'successes' + str(database[username][digitsSucceeded[numToSign]])
-
-        # database[username][digitsAttempted[i]] = database[username].get(digitsAttempted[i]) + 1
-
-        #print database[username][digitsAttempted[numToSign]]
-        # pickle.dump(database, open('userData/database.p', 'wb'))
-        prevtime = time.time()
-
-        start = 0
-        prevState = 1
         programState = 4
+#
+# def HandleState1():
+#     global programState
+#     global prevState
+#     global wrongPosition
+#     global numToSign
+#     global fakeNum
+#     global realCoord
+#     global fakeCoord
+#     global start
+#     global prevtime
+#
+#     wrongPosition = False
+#
+#     print 'mid', (testData[0,12], testData[0,13], testData[0,14])
+#     # centeredX: 3-ish, centeredY: 7-ish
+#     print 'ring', (testData[0,18], testData[0,19], testData[0,20])
+#     # centeredX: 24-ish, centeredY: 8-ish
+#     print 'ind', (testData[0, 6], testData[0, 7], testData[0, 8])
+#     # centeredX: -17-ish, centeredY: 2-ish
+#     #time.sleep(0.6)
+#
+#     if len(frame.hands) == 0:
+#         prevState = 1
+#         programState = 0
+#
+# # INDEX FINGER CENTERING
+# #   Instructions to center hand along x axis
+#     if testData[0, 6] < -20.5: # originally <-2
+#         pygameWindow.showMoveLeftImage()
+#         wrongPosition = True
+#     elif testData[0, 6] > -15.5:
+#         pygameWindow.showMoveRightImage()
+#         wrongPosition = True
+#
+# #    Instructions to center hand along y axis
+#     elif testData[0, 7] > 4:
+#         pygameWindow.showMoveForwardImage()
+#         wrongPosition = True
+#     elif testData[0, 7] < -11:
+#         pygameWindow.showMoveBackwardImage()
+#         wrongPosition = True
+#
+#     if not wrongPosition:
+#         print wrongPosition
+#         # pygameWindow.showSuccessImage()
+#         # pygameWindow.Reveal()
+#         # time.sleep(0.5)
+#         # pygameWindow.Prepare()
+#
+#
+#
+#         for i in range(0, 10):
+#             # if userRecord[digitsSucceeded[i]] == 0:
+#
+#             # the program is seeing how many times the user has successfully signed.
+#             # so, consulting the number of succeeded repetitions.
+#             # if they've done it at least 3 times (in a row?), the program progresses to next digit.
+#
+#             # if the user has not successfully signed digit i at least 3 times:
+#
+#             if database[username]['digitsSucceeded'][digitsSucceeded[i]] < thresh:
+#                 start = start + 1
+#
+#         # choose numToSign based on what numbers have been successfully signed
+#         if start == 10:
+#             numToSign = 0
+#         elif start == 9:
+#             numToSign = 1
+#         elif start == 8:
+#             numToSign = 2
+#         elif start == 7:
+#             numToSign = 3
+#         elif start == 6:
+#             numToSign = 4
+#         elif start == 5:
+#             numToSign = 5
+#         elif start == 4:
+#             numToSign = 6
+#         elif start == 3:
+#             numToSign = 7
+#         elif start == 2:
+#             numToSign = 8
+#         elif start == 1:
+#             numToSign = 9
+#
+#         #need to figure out how to restart this if user has achieved all 9
+#         elif start == 0:
+#             numToSign = random.randint(0,9)
+#
+#         #print database[username][digitsAttempted[numToSign]]
+#         # pickle.dump(database, open('userData/database.p', 'wb'))
+#         prevtime = time.time()
+#
+#         start = 0
+#         prevState = 1
+#         programState = 4
 
 
 
@@ -455,7 +449,7 @@ def HandleState2():
 
     divisor = 2
 
-    pygameWindow.showLeaderboard(res)
+    pygameWindow.showLeaderboard(res, 'practice')
     pygameWindow.progressBar(points, fail)
 
 
@@ -538,12 +532,6 @@ def HandleState2():
 
     else: #database[username][digitsSucceeded[numToSign]] < 3:
         if (time.time() - prevtime) > 6:
-            # pygameWindow.youFailed()
-            # pygameWindow.showFailImage()
-            # pygameWindow.Reveal()
-            # time.sleep(0.5)
-            # pygameWindow.Prepare()
-            # fail = 0
             points = 0
             prevtime = time.time()
             database[username]['digitsAttempted'][digitsAttempted[numToSign]] = database[username]['digitsAttempted'].get(digitsAttempted[numToSign]) + 1
@@ -557,7 +545,7 @@ def HandleState2():
         points = points + 1
 
         fail = 0 # Maybe this?????
-        if points == 15:
+        if points == 10:
             database[username]['digitsSucceeded'][digitsSucceeded[numToSign]] = database[username]['digitsSucceeded'].get(digitsSucceeded[numToSign]) + 1
             database[username]['rank'] = database[username].get('rank') + 1
             print database[username]['digitsSucceeded'][digitsSucceeded[numToSign]]
@@ -573,7 +561,7 @@ def HandleState2():
         fail = fail + 1
         #pygameWindow.showFailImage()
 
-def HandleState3():
+def HandleState3(): #normally state3
     global programState
     global prevState
     global numToSign
@@ -581,12 +569,8 @@ def HandleState3():
     global prevtime
     global res
 
-    print prevState
-    # can I make you update only a portion of the screen????
-
     pygameWindow.showSuccessImage()
-    pygameWindow.Reveal()
-    time.sleep(1)
+    time.sleep(0.75)
     pygameWindow.Prepare()
 
     # totalSucceeded = 0
@@ -600,119 +584,76 @@ def HandleState3():
     print res
 
     if len(frame.hands) > 0:
-        # MIDDLE FINGER CENTERING
-        # If hand off-center in x direction
+        bleh = 0
 
-        if testData[0, 12] < -50:
-            wrongPosition = True
-        elif testData[0, 12] > 50:
-            wrongPosition = True
+        if prevState == 2:
+            if database[username]['digitsSucceeded'][digitsSucceeded[numToSign]] < thresh:
+                numToSign = numToSign
+            else:
+                for i in range(0, 10):
 
-        # If hand off-center in y direction
-        elif testData[0, 13] < -50:
-            wrongPosition = True
-        elif testData[0, 13] > 50:
-            wrongPosition = True
+                    # if the user has not successfully signed digit i at least 3 times:
+                    if database[username]['digitsSucceeded'][digitsSucceeded[i]] < thresh:
+                        bleh = bleh + 1
 
-        else:
-            wrongPosition = False
+                # choose numToSign based on what numbers have been successfully signed
+                if bleh == 10:
+                    numToSign = 0
+                elif bleh == 9:
+                    numToSign = 1
+                elif bleh == 8:
+                    numToSign = 2
+                elif bleh == 7:
+                    numToSign = 3
+                elif bleh == 6:
+                    numToSign = 4
+                elif bleh == 5:
+                    numToSign = 5
+                elif bleh == 4:
+                    numToSign = 6
+                elif bleh == 3:
+                    numToSign = 7
+                elif bleh == 2:
+                    numToSign = 8
+                elif bleh == 1:
+                    numToSign = 9
+                elif bleh == 0:
+                    numToSign = random.randint(0,9)
 
+                # if database[username]['rank'] >= 40:
+                #     programState = 4 # the mode selection state
 
-        # INDEX FINGER CENTERING
-        #   Instructions to center hand along x axis
-        # if testData[0, 6] < -30:  # originally <-2
-        #     pygameWindow.showMoveLeftImage()
-        #     wrongPosition = True
-        # elif testData[0, 6] > 0:
-        #     pygameWindow.showMoveRightImage()
-        #     wrongPosition = True
-        #
-        #     #    Instructions to center hand along y axis
-        # elif testData[0, 7] > 5:
-        #     pygameWindow.showMoveForwardImage()
-        #     wrongPosition = True
-        # elif testData[0, 7] < -15:
-        #     pygameWindow.showMoveBackwardImage()
-        #     wrongPosition = True
+                if database[username]['rank'] == 30:
+                    pygameWindow.showLevelUp()
 
-
-        if wrongPosition:
+            prevtime = time.time()
             prevState = 3
-            programState = 1
-        else:
+            programState = 2
 
-            bleh = 0
+        if prevState == 5:
+            mathNum, c, d, op = chooseMathNum()
 
-            if prevState == 2:
+            if mathNum == 0:
+                limit0 = random.randint(0, 10)
+                if limit0 > 2:
+                    while mathNum == 0:
+                        mathNum, c, d, op = chooseMathNum()
 
-                if database[username]['digitsSucceeded'][digitsSucceeded[numToSign]] < thresh:
-                    numToSign = numToSign
-                else:
+            elif mathNum == 1:
+                limit1 = random.randint(0, 10)
+                if limit1 > 2:
+                    while mathNum == 1:
+                        mathNum, c, d, op = chooseMathNum()
 
-                    for i in range(0, 10):
-                        # the program is seeing how many times the user has successfully signed.
-                        # so, consulting the number of succeeded repetitions.
-                        # if they've done it at least 3 times (in a row?), the program progresses to next digit.
-
-                        # if the user has not successfully signed digit i at least 3 times:
-                        if database[username]['digitsSucceeded'][digitsSucceeded[i]] < thresh:
-                            bleh = bleh + 1
-
-                    # choose numToSign based on what numbers have been successfully signed
-                    if bleh == 10:
-                        numToSign = 0
-                    elif bleh == 9:
-                        numToSign = 1
-                    elif bleh == 8:
-                        numToSign = 2
-                    elif bleh == 7:
-                        numToSign = 3
-                    elif bleh == 6:
-                        numToSign = 4
-                    elif bleh == 5:
-                        numToSign = 5
-                    elif bleh == 4:
-                        numToSign = 6
-                    elif bleh == 3:
-                        numToSign = 7
-                    elif bleh == 2:
-                        numToSign = 8
-                    elif bleh == 1:
-                        numToSign = 9
-                    elif bleh == 0:
-                        numToSign = random.randint(0,9)
-
-                    if database[username]['rank'] >= 40:
-                        programState = 4 # the mode selection state
-
-                prevtime = time.time()
-                prevState = 3
-                programState = 2
-
-            if prevState == 5:
-                mathNum, c, d, op = chooseMathNum()
-
-                if mathNum == 0:
-                    limit0 = random.randint(0, 10)
-                    if limit0 > 2:
-                        while mathNum == 0:
-                            mathNum, c, d, op = chooseMathNum()
-
-                elif mathNum == 1:
-                    limit1 = random.randint(0, 10)
-                    if limit1 > 2:
-                        while mathNum == 1:
-                            mathNum, c, d, op = chooseMathNum()
-
-                eqn = str(c) + ' {} '.format(opvec[op]) + str(d) + ' = __'
-                prevState = 3
-                programState = 5
+            eqn = str(c) + ' {} '.format(opvec[op]) + str(d) + ' = __'
+            prevState = 3
+            programState = 5
 
     else:
         prevState = 3
         programState = 0
 
-def HandleState4(): # select the game mode
+def HandleState4(): # select the game mode, actually state4
     # if I enable a back button in the other modes, it'll lead here
     global prevtime
     global runtime
@@ -721,12 +662,14 @@ def HandleState4(): # select the game mode
     global programState
     global prevState
     global randNum
+    global numToSign
     global mathNum, c, d, op
     global runScore
     global fail
     global points
     global missed
     divisor = 1
+
 
     print(testData[0,9:12])
 
@@ -736,32 +679,56 @@ def HandleState4(): # select the game mode
 
     print 'ind' + str(drawnIndex[0:3]) + ', '
 
-
-
     if (drawnIndex[0] > 400) & (drawnIndex[0] < 420):   #originally 425 and 435
         if (drawnIndex[1] > 290) & (drawnIndex[1] < 420):   #originally 300 and 390
             mode = 'practice'
             pygameWindow.modeSelect(mode)
             prevtime = time.time()
             divisor = 2
+            bleh = 0
             prevState = 4
             programState = 2
+            for i in range(0, 10):
+                if database[username]['digitsSucceeded'][digitsSucceeded[i]] < thresh:
+                    bleh = bleh + 1
 
-    if database[username].get('rank') < 4:
-        ready = False
+                # choose numToSign based on what numbers have been successfully signed
+                if bleh == 10:
+                    numToSign = 0
+                elif bleh == 9:
+                    numToSign = 1
+                elif bleh == 8:
+                    numToSign = 2
+                elif bleh == 7:
+                    numToSign = 3
+                elif bleh == 6:
+                    numToSign = 4
+                elif bleh == 5:
+                    numToSign = 5
+                elif bleh == 4:
+                    numToSign = 6
+                elif bleh == 3:
+                    numToSign = 7
+                elif bleh == 2:
+                    numToSign = 8
+                elif bleh == 1:
+                    numToSign = 9
+                elif bleh == 0:
+                    numToSign = random.randint(0, 9)
+
+    if database[username].get('rank') < 15:
+        mathReady = False
+        speedReady = False
+
+    elif database[username].get('rank') >= 15 and database[username].get('rank') < 30:
+        mathReady = False
+        speedReady = True
+
     else:
-        ready = True
-        if (drawnIndex[0] > 350) & (drawnIndex[0] < 360):
-            if (drawnIndex[1] > 300) & (drawnIndex[1] < 390):
-                # figure out how to make it so they have to stay here for 2 seconds
-                mode = 'math'
-                pygameWindow.modeSelect(mode)
-                mathNum, c, d, op = chooseMathNum()
-                prevtime = time.time()
-                divisor = 2
-                programState = 5
+        mathReady = True
+        speedReady = True
 
-        # originally 365 and 375
+    if speedReady:
         if (drawnIndex[0] > 375) & (drawnIndex[0] < 385):
             if (drawnIndex[1] > 90) & (drawnIndex[1] < 200):
                 mode = 'speed'
@@ -776,8 +743,68 @@ def HandleState4(): # select the game mode
                 divisor = 2
                 missed = 0
                 programState = 6
+        if mathReady:
+            if (drawnIndex[0] > 350) & (drawnIndex[0] < 360):
+                if (drawnIndex[1] > 300) & (drawnIndex[1] < 390):
+                    # figure out how to make it so they have to stay here for 2 seconds
+                    mode = 'math'
+                    pygameWindow.modeSelect(mode)
+                    mathNum, c, d, op = chooseMathNum()
+                    prevtime = time.time()
+                    divisor = 2
+                    programState = 5
+    #
+    # if mathReady and speedReady:
+    #     if (drawnIndex[0] > 350) & (drawnIndex[0] < 360):
+    #         if (drawnIndex[1] > 300) & (drawnIndex[1] < 390):
+    #             # figure out how to make it so they have to stay here for 2 seconds
+    #             mode = 'math'
+    #             pygameWindow.modeSelect(mode)
+    #             mathNum, c, d, op = chooseMathNum()
+    #             prevtime = time.time()
+    #             divisor = 2
+    #             programState = 5
+    #
+    #     # originally 365 and 375
+    #     if (drawnIndex[0] > 375) & (drawnIndex[0] < 385):
+    #         if (drawnIndex[1] > 90) & (drawnIndex[1] < 200):
+    #             mode = 'speed'
+    #             pygameWindow.modeSelect(mode)
+    #             prevtime = time.time()
+    #             runtime = time.time()
+    #             counterTime = time.time()
+    #             randNum = random.randint(0, 9)
+    #             runScore = 0
+    #             points = 0
+    #             fail = 0
+    #             divisor = 2
+    #             missed = 0
+    #             programState = 6
+    #
+    # elif speedReady:
+    #     if (drawnIndex[0] > 375) & (drawnIndex[0] < 385):
+    #         if (drawnIndex[1] > 90) & (drawnIndex[1] < 200):
+    #             mode = 'speed'
+    #             pygameWindow.modeSelect(mode)
+    #             prevtime = time.time()
+    #             runtime = time.time()
+    #             counterTime = time.time()
+    #             randNum = random.randint(0, 9)
+    #             runScore = 0
+    #             points = 0
+    #             fail = 0
+    #             divisor = 2
+    #             missed = 0
+    #             programState = 6
 
-    pygameWindow.showModes(ready)
+
+    #pygameWindow.showModes(ready)
+    pygameWindow.showModes(database[username].get('rank'))
+
+    rank = database[username].get('rank')
+    speedRecord = database[username]['runScore'].get('highest')
+    mathScore = database[username]['mathScore'].get('total')
+    pygameWindow.showAchievements(rank, speedRecord, mathScore)
 
 def HandleState5(): # math mode
     global mathNum, c, d, op
@@ -802,8 +829,6 @@ def HandleState5(): # math mode
 
     eqn = str(c) + ' {} '.format(opvec[op]) + str(d) + ' = __'
 
-
-
     pygameWindow.showEqn(eqn,mathNum,predictedClass)
 
     print(predictedClass, mathNum)
@@ -813,22 +838,26 @@ def HandleState5(): # math mode
         points = points + 1
         if points == 8:
             points = 0
+            database[username]['mathScore']['total'] = database[username]['mathScore'].get('total') + 1
+            database[username]['mathScore'][opvec[op]] = database[username]['mathScore'].get(opvec[op]) + 1
+            print database[username]['mathScore']
+            pickle.dump(database, open('userData/database.p', 'wb'))
             prevState = 5
             programState = 3
 
 
 
+    # advanced math:
 
+    # give a number your signs must equal to and a random operator.
+    # user must sign 2 numbers that, with the operator applied, equal the given
 
-
-
+    # work with random numbers between 1 and 50 instead of 1 and 9
+    # then between 1 and 100
 
 
     # if you've failed too many times, eqn becomes:
     # eqn = str(c) + ' {} '.format(opvec[op]) + str(d) + ' = ' + str(mathNum)
-
-    # We're gonna have to find a way to make previous program state matter when the success image shows up
-
 
 
 
@@ -908,6 +937,8 @@ def HandleState6(): # speed mode
         if runScore > database[username]['runScore']['highest']:
             database[username]['runScore']['highest'] = runScore
         database[username]['runScore']['previous'] = runScore
+        pickle.dump(database, open('userData/database.p', 'wb'))
+
         print 'highest: ', runScore
 
         timeLeft = 10
@@ -922,6 +953,17 @@ def HandleState7():
 
     pygameWindow.timeUp(runScore,missed)
     pygameWindow.showBackBtn()
+
+    for user in database:
+        speedRecord = database[user]['runScore']['highest']
+        speederboard[user] = speedRecord
+        print user, database[user]['runScore']['highest']
+
+    timeList = sorted(speederboard.items(), key=operator.itemgetter(1), reverse=True)
+    print timeList
+
+    pygameWindow.showLeaderboard(timeList, 'speed')
+
 
     drawnIndex = Handle_Vector_From_Leap(testData[0, 9:12], divisor)
     print(drawnIndex)
@@ -976,8 +1018,8 @@ while runStatus:
 
     if programState == 0:
         HandleState0()
-    elif programState == 1:
-        HandleState1()
+    # elif programState == 1:
+    #     HandleState1()
     elif programState == 2:
         HandleState2()
     elif programState == 3:

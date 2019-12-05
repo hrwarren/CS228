@@ -1,19 +1,131 @@
-import threading
 import time
 import random
+import constants
+import pygameWindow
+import pygame, sys
 
-start = time.time()
-counter = 11
-timer = True
+random.seed()
 
-while timer:
-    if time.time() - start > 1:
-        start = time.time()
-        counter = counter - 1
+pygameWindow = pygameWindow.PYGAME_WINDOW()
+#
+# while True:
+#     # pygameWindow.Prepare()
+#     pygameWindow.showLevelUp()
+#     # pygameWindow.Reveal()
 
-        print "%s seconds left" % counter
-        if counter <= 0:
-            timer = False
+# pygame.init()
+# window=pygame.display.set_mode((1500, 800))
+# background=pygame.Surface((window.get_rect().width, window.get_rect().height))
+# background.fill((0, 0, 0))
+# image=pygameWindow.pics.lockedImage.convert()
+# rect=image.get_rect()
+#
+# i=255
+# while True:
+#     image.set_alpha(i)
+#     window.fill((255, 255, 255))
+#     window.blit(background, background.get_rect())
+#     window.blit(image, rect)
+#     pygame.time.delay(20)
+#     i-=1
+#     if i==0:
+#         exit()
+#     pygame.display.update()
+
+ready = False
+score = 20
+if score >= 20:
+    ready = True
+while ready:
+    c = random.randint(0,100)
+    d = random.randint(0,100)
+
+    op = random.randint(0,3)
+    op = 2
+
+    if op == 0:
+        mathNum = c + d
+        while mathNum > 9:
+            d = random.randint(0,100)
+            if c > 9:
+                c = random.randint(0,9)
+            if d > 9:
+                d = random.randint(0,9)
+            mathNum = c + d
+        print(str(c) + '+' + str(d) + ' = ' + str(mathNum))
+
+    elif op == 1:
+        mathNum = c - d
+        while mathNum < 0 or mathNum > 9:  # if??
+            if c == 0:
+                c = random.randint(0, 100)
+            d = random.randint(0, 100)
+            mathNum = c - d
+        print(str(c) + '-' + str(d) + ' = ' + str(mathNum))
+
+    elif op == 2:
+
+        c = random.randint(0,100)
+        d = random.randint(1,100)/1.0
+        mathNum = c/d
+
+        intVal = False
+        while intVal == False:
+            if mathNum % 2 == 0 or (mathNum + 1) % 2 == 0:
+                if mathNum <= 9:
+                    if mathNum == 1:
+                        limiter1 = random.randint(0,100)
+                        if limiter1 > 1:
+                            c = random.randint(1, 100) / 1.0
+                            mathNum = c / d
+                            intVal = False
+                        else:
+                            intVal = True
+                    else:
+                        intVal = True
+                else:
+                    c = random.randint(1, 100) / 1.0
+                    mathNum = c / d
+                    intVal = False
+            else:
+                d = random.randint(1, 100) / 1.0
+                mathNum = c / d
+                intVal = False
+
+        mathNum = int(mathNum)
+        d = int(d)
+        print(str(c) + '/' + str(d) + ' = ' + str(mathNum))
+
+    elif op == 3:
+        mathNum = c * d
+        while mathNum > 9:
+            d = random.randint(0, 9)
+            mathNum = c * d
+        print(str(c) + '*' + str(d) + ' = ' + str(mathNum))
+
+
+
+
+
+
+
+
+
+
+
+
+# start = time.time()
+# counter = 11
+# timer = True
+#
+# while timer:
+#     if time.time() - start > 1:
+#         start = time.time()
+#         counter = counter - 1
+#
+#         print "%s seconds left" % counter
+#         if counter <= 0:
+#             timer = False
 
 # elapsed = time.time() - runtime
 # print elapsed
