@@ -67,6 +67,7 @@ class PICS:
         # Lock and unlock images for login screen and mode screen
         self.lockedImage = pygame.transform.scale(pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\locked.jpg'), constants.lockSize)
         self.unlockedImage = pygame.transform.scale(pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\unlocked.jpg'), constants.lockSize)
+        self.gameTitle = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\gameTitle.jpg')
 
         # Mode icons for mode selection screen
         self.practiceBox = pygame.transform.scale(pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\practiceBox.jpg'), (100,100))
@@ -81,6 +82,7 @@ class PICS:
 
         # Images for the "time's up" screen at the end of speed mode
         self.clock = pygame.transform.scale(pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\clock.jpg'), (120,144))
+        self.again = pygame.transform.scale(pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\Again.png'), (80, 80))
 
         # The "back" button for all modes
         self.backBtn = pygame.transform.scale(pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\prevBtn.jpg'), (60,30))

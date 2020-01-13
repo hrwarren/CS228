@@ -135,6 +135,9 @@ class PYGAME_WINDOW:
         if mode == 'practice':
             coords = constants.leaderboardCoords
 
+        if mode == 'math':
+            coords = constants.mathboardCoords
+
         label = []
         for player in rankList:
             if player[1] != 0:
@@ -262,6 +265,7 @@ class PYGAME_WINDOW:
         # clock = pygame.image.load('C:\Users\Haley\Desktop\School Papers\HCI CS228 Jr\clock.jpg')
         # clock = pygame.transform.scale(clock, (120,144))
 
+        self.screen.blit(self.pics.again, (constants.backBtnCoords[0], constants.backBtnCoords[1]-200))
 
         redZero = self.eqnfont.render('= 0', True, constants.red)
         self.screen.blit(redZero, constants.redZeroCoords)
@@ -301,7 +305,7 @@ class PYGAME_WINDOW:
         if predictedNum == mathNum:
             ansColor = constants.green
 
-        ans = str(predictedNum)
+        ans = '  ' + str(predictedNum)
         ans = self.eqnfont.render(ans, True, ansColor)
         self.screen.blit(ans, constants.ansCoords)
 
@@ -367,6 +371,8 @@ class PYGAME_WINDOW:
             # Blit the input_box rect.
             pygame.draw.rect(self.screen, color, input_box, 2)
 
+            self.screen.blit(self.pics.gameTitle, constants.titleCoords)
+
             # Blit the lock/unlock image
             if unlocked:
                 self.screen.blit(self.pics.unlockedImage, constants.lockCoords)
@@ -381,10 +387,9 @@ class PYGAME_WINDOW:
 
         return text
 
-    def showAchievements(self, rank, speedRecord, mathScore):
+    def showAchievements(self, rank, speedRecord, mathScore, logins):
 
-        j = 0
-
+        loTag = pygame.transform.scale(self.pics.unlockedImage,(50,50))
 
         # badgeBox
 
@@ -394,8 +399,7 @@ class PYGAME_WINDOW:
         self.screen.blit(self.pics.pbTag, constants.pbTagCoords)
         self.screen.blit(self.pics.sbTag, constants.sbTagCoords)
         self.screen.blit(self.pics.mbTag, constants.mbTagCoords)
-
-
+        self.screen.blit(loTag, constants.loTagCoords)
 
 
 
@@ -406,19 +410,26 @@ class PYGAME_WINDOW:
                 if rank >= 45:
                     self.screen.blit(self.pics.b[2], constants.pb2Coords)
 
-        if speedRecord >= 3:
+        if speedRecord >= 1:
             self.screen.blit(self.pics.b[0], constants.sb0Coords)
-            if speedRecord >= 5:
+            if speedRecord >= 3:
                 self.screen.blit(self.pics.b[1], constants.sb1Coords)
                 if speedRecord >= 10:
                     self.screen.blit(self.pics.b[2], constants.sb2Coords)
 
-        if mathScore >= 10:
+        if mathScore >= 5:
             self.screen.blit(self.pics.b[0], constants.mb0Coords)
-            if rank >= 20:
+            if rank >= 10:
                 self.screen.blit(self.pics.b[1], constants.mb1Coords)
-                if rank >= 30:
+                if rank >= 20:
                     self.screen.blit(self.pics.b[2], constants.mb2Coords)
+
+        if logins >= 2:
+            self.screen.blit(self.pics.b[0], constants.lb0Coords)
+            if logins >= 5:
+                self.screen.blit(self.pics.b[1], constants.lb1Coords)
+                if logins >= 10:
+                    self.screen.blit(self.pics.b[2], constants.lb2Coords)
 
     def showLevelUp(self):
         self.screen.fill(constants.white)

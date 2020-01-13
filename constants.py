@@ -13,6 +13,7 @@ grey = (192,192,192)
 #Login screen locations
 lockCoords = (345, 100)
 lockSize = (100, 110)
+titleCoords = (10, 400)
 
 #Where to display the helpful images
 startingImageCoords = (500, -100)
@@ -57,6 +58,7 @@ mathBox = (111,301)
 #mathCoords = [-50, 300, 400, 300]
 mathRect = (110, 300, 105, 105)
 
+
 speedBox = (mathBox[0] + 250, 101)
 #speedCoords = [400, 450, 400, 300]
 speedRect = (360, 100, 105, 105)
@@ -80,8 +82,9 @@ practiceBox = (speedBox[0] + 250, mathBox[1])
 practiceRect = (610, 300, 105, 105)
 
 
-eqnCoords = (200,500)
+eqnCoords = (200,400)
 ansCoords = (eqnCoords[0] + 300, eqnCoords[1]-7)
+mathboardCoords = (scoreCoords[0]+100,scoreCoords[1]+200)
 
 backBtnCoords = (60, 250)
 
@@ -89,8 +92,8 @@ backBtnCoords = (60, 250)
 xSpacer = 50
 ySpacer = 70
 
-boxCoords = (110, 520, 250, 230)
-trophyCoords = (10,520+70)
+boxCoords = (160, 520, 500, 230)
+trophyCoords = (60,520+70)
 
 pbTagCoords = (boxCoords[0]+20, boxCoords[1]+5)
 pb0Coords = (pbTagCoords[0]+ 1.3*xSpacer, pbTagCoords[1])
@@ -106,6 +109,12 @@ mb0Coords = (pb0Coords[0], sb0Coords[1]+ySpacer)
 mb1Coords = (pb0Coords[0] + xSpacer, mb0Coords[1])
 mb2Coords = (pb1Coords[0] + xSpacer, mb1Coords[1])
 mbTagCoords = (pbTagCoords[0], sbTagCoords[1]+ySpacer)
+
+loTagCoords = (pb2Coords[0] + 2*xSpacer, pbTagCoords[1])
+lb0Coords = (loTagCoords[0] + xSpacer, pbTagCoords[1])
+lb1Coords = (lb0Coords[0] + xSpacer, pbTagCoords[1])
+lb2Coords = (lb1Coords[0] + xSpacer, pbTagCoords[1])
+
 
 # pbTagCoords = (boxCoords[0] + 5, boxCoords[1] + 180)
 # pb0Coords = (pbTagCoords[0], pbTagCoords[1] - ySpacer)

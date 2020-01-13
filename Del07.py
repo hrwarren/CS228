@@ -72,6 +72,9 @@ leaderboard = {}
 # Initialize the dictionary for storing the speed mode leaderboard
 speederboard = {}
 
+# Initialize the dictionary for storing the math mode leaderboard
+mathboard = {}
+
 # divisor for scaling drawing window
 divisor = 2
 # 2 to take up 1/4 of the window
@@ -279,13 +282,13 @@ def CenterData(testData):
     return testData
 
 
-def chooseMathNum():
-    c = random.randint(0, 9)
-    d = random.randint(0, 9)
+def chooseMathNum(mathScore):
 
     op = random.randint(0, 3)
 
-    if True is True:
+    if mathScore < 5:
+        c = random.randint(0, 9)
+        d = random.randint(0, 9)
 
         if op == 0:
             mathNum = c + d
@@ -320,7 +323,81 @@ def chooseMathNum():
             mathNum = c * d
             while mathNum > 9:
                 d = random.randint(0, 9)
+                mathNum =c * d
+
+    else:
+        if op == 0 or op == 3:
+            c = random.randint(0,9)
+            d = random.randint(0,9)
+        else:
+            c = random.randint(0, 100)
+            d = random.randint(0, 100)
+
+        if op == 0:
+            mathNum = c + d
+            while mathNum > 9:
+                d = random.randint(0, 100)
+                if c > 9:
+                    c = random.randint(0, 9)
+                if d > 9:
+                    d = random.randint(0, 9)
+                mathNum = c + d
+
+        elif op == 1:
+            mathNum = c - d
+            while mathNum < 0 or mathNum > 9:  # if??
+                if c == 0:
+                    c = random.randint(0, 100)
+                d = random.randint(0, 100)
+                mathNum = c - d
+
+        elif op == 2:
+            c = random.randint(0, 100)
+            d = random.randint(1, 100) / 1.0
+            mathNum = c / d
+
+            intVal = False
+            while intVal == False:
+                if mathNum % 2 == 0 or (mathNum + 1) % 2 == 0:
+                    if mathNum <= 9:
+                        if mathNum == 1:
+                            limiter1 = random.randint(0, 100)
+                            if limiter1 > 1:
+                                c = random.randint(1, 100) / 1.0
+                                mathNum = c / d
+                                intVal = False
+                            else:
+                                intVal = True
+                        else:
+                            c = int(c)
+                            intVal = True
+                    else:
+                        c = random.randint(1, 100) / 1.0
+                        mathNum = c / d
+                        intVal = False
+                else:
+                    d = random.randint(1, 100) / 1.0
+                    mathNum = c / d
+                    intVal = False
+
+            mathNum = int(mathNum)
+            d = int(d)
+
+        elif op == 3:
+            # c = random.randint(0, 9)
+            # d = random.randint(0, 9)
+            mathNum = c * d
+            while mathNum > 9:
+                d = random.randint(0, 9)
                 mathNum = c * d
+            if mathNum == 0:
+                limiter0 = random.randint(0, 200)
+                if limiter0 > 1:
+                    c = random.randint(0, 9)
+
+
+
+
 
 
 
@@ -631,19 +708,19 @@ def HandleState3(): #normally state3
             programState = 2
 
         if prevState == 5:
-            mathNum, c, d, op = chooseMathNum()
+            mathNum, c, d, op = chooseMathNum(database[username]['mathScore'].get('total'))
 
             if mathNum == 0:
                 limit0 = random.randint(0, 10)
                 if limit0 > 2:
                     while mathNum == 0:
-                        mathNum, c, d, op = chooseMathNum()
+                        mathNum, c, d, op = chooseMathNum(database[username]['mathScore'].get('total'))
 
             elif mathNum == 1:
                 limit1 = random.randint(0, 10)
                 if limit1 > 2:
                     while mathNum == 1:
-                        mathNum, c, d, op = chooseMathNum()
+                        mathNum, c, d, op = chooseMathNum(database[username]['mathScore'].get('total'))
 
             eqn = str(c) + ' {} '.format(opvec[op]) + str(d) + ' = __'
             prevState = 3
@@ -749,7 +826,7 @@ def HandleState4(): # select the game mode, actually state4
                     # figure out how to make it so they have to stay here for 2 seconds
                     mode = 'math'
                     pygameWindow.modeSelect(mode)
-                    mathNum, c, d, op = chooseMathNum()
+                    mathNum, c, d, op = chooseMathNum(database[username]['mathScore'].get('total'))
                     prevtime = time.time()
                     divisor = 2
                     programState = 5
@@ -804,7 +881,8 @@ def HandleState4(): # select the game mode, actually state4
     rank = database[username].get('rank')
     speedRecord = database[username]['runScore'].get('highest')
     mathScore = database[username]['mathScore'].get('total')
-    pygameWindow.showAchievements(rank, speedRecord, mathScore)
+    logins = database[username].get('logins')
+    pygameWindow.showAchievements(rank, speedRecord, mathScore, logins)
 
 def HandleState5(): # math mode
     global mathNum, c, d, op
@@ -816,18 +894,28 @@ def HandleState5(): # math mode
 
     pygameWindow.showBackBtn()
 
+    for user in database:
+        mathScore = database[user]['mathScore']['total']
+        mathboard[user] = mathScore
+        print user, database[user]['mathScore']['total']
+
+    mathList = sorted(mathboard.items(), key=operator.itemgetter(1), reverse=True)
+    print mathList
+
+    pygameWindow.showLeaderboard(mathList, 'math')
+
     if len(frame.hands) == 0:
         prevState = 5
         programState = 0
 
     drawnIndex = Handle_Vector_From_Leap(testData[0, 9:12], divisor)
     print(drawnIndex)
-    if (drawnIndex[0] > 175) & (drawnIndex[0] < 182):
-        if (drawnIndex[1] > 250) & (drawnIndex[1] < 270):
+    if (drawnIndex[0] > 175) and (drawnIndex[0] < 182):
+        if (drawnIndex[1] > 250) and (drawnIndex[1] < 270):
             # figure out how to make it so they have to stay here for 2 seconds
             programState = 4
 
-    eqn = str(c) + ' {} '.format(opvec[op]) + str(d) + ' = __'
+    eqn = str(c) + ' {} '.format(opvec[op]) + str(d) + ' = ____'
 
     pygameWindow.showEqn(eqn,mathNum,predictedClass)
 
@@ -840,7 +928,6 @@ def HandleState5(): # math mode
             points = 0
             database[username]['mathScore']['total'] = database[username]['mathScore'].get('total') + 1
             database[username]['mathScore'][opvec[op]] = database[username]['mathScore'].get(opvec[op]) + 1
-            print database[username]['mathScore']
             pickle.dump(database, open('userData/database.p', 'wb'))
             prevState = 5
             programState = 3
@@ -890,6 +977,7 @@ def HandleState6(): # speed mode
         if (drawnIndex[1] > 250) & (drawnIndex[1] < 270):
             # figure out how to make it so they have to stay here for 2 seconds
             programState = 4
+
 
 
     if (time.time() - prevtime) < 11:   #if current time - the time this started is less than 10 seconds
@@ -950,6 +1038,13 @@ def HandleState7():
     global runScore
     global missed
     global programState
+    global prevtime
+    global runtime
+    global counterTime
+    global randNum
+    global divisor
+    global points
+    global fail
 
     pygameWindow.timeUp(runScore,missed)
     pygameWindow.showBackBtn()
@@ -971,41 +1066,17 @@ def HandleState7():
         if (drawnIndex[1] > 250) & (drawnIndex[1] < 270):
             # figure out how to make it so they have to stay here for 2 seconds
             programState = 4
-
-
-
-
-
-            # if nowtime < 5:
-            #     pygameWindow.fakeOut(numToSign, fakeNum, realCoord, fakeCoord)
-            # else:
-
-
-
-                #
-                # database[username]['speedrunRecord'] = database[username].get('speedrunRecord') + 1
-                #
-                # database[username]['digitsSucceeded'][digitsSucceeded[numToSign]] = database[username]['digitsSucceeded'].get(digitsSucceeded[numToSign]) + 1
-                # database[username]['rank'] = database[username].get('rank') + 1
-                # print database[username]['digitsSucceeded'][digitsSucceeded[numToSign]]
-                # pickle.dump(database, open('userData/database.p', 'wb'))
-                #
-
-
-    # if scaled index coordinates enter box X (math)
-    # highlight box in green
-    # start math mode
-    # elif scaled index coordinates enter box Y (random)
-    # highlight box in green
-    # start random mode
-    # if scaled index coordinates enter box Z (practice)
-    # highlight box in green
-    # start practice mode
-
-    # if the user enters random mode
-    # show random numbers for them to sign for 1 minute
-    #
-
+        if (drawnIndex[1] > 120) and (drawnIndex[1] < 200):
+            prevtime = time.time()
+            runtime = time.time()
+            counterTime = time.time()
+            randNum = random.randint(0, 9)
+            runScore = 0
+            points = 0
+            fail = 0
+            divisor = 2
+            missed = 0
+            programState = 6
 
 
 
